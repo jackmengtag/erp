@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.mdm.mapper.ErpPriceMapper">
+
+    <resultMap type="ErpPrice" id="ErpPriceResult">
+        <result property="priceId"    column="price_id"    />
+        <result property="priceType"    column="price_type"    />
+        <result property="materialId"    column="material_id"    />
+        <result property="partnerId"    column="partner_id"    />
+        <result property="currency"    column="currency"    />
+        <result property="qtyMin"    column="qty_min"    />
+        <result property="price"    column="price"    />
+        <result property="taxRate"    column="tax_rate"    />
+        <result property="effectDate"    column="effect_date"    />
+        <result property="expireDate"    column="expire_date"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectErpPriceVo">
+        select price_id, price_type, material_id, partner_id, currency, qty_min, price, tax_rate, effect_date, expire_date, status, create_by, create_time, update_by, update_time, remark from erp_price
+    </sql>
+
+    <select id="selectErpPriceList" parameterType="ErpPrice" resultMap="ErpPriceResult">
+        <include refid="selectErpPriceVo"/>
+        <where>
+            del_flag = '0'
+            <if test="priceType != null  and priceType != ''"> and price_type = #{priceType}</if>
+            <if test="materialId != null "> and material_id = #{materialId}</if>
+            <if test="partnerId != null "> and partner_id = #{partnerId}</if>
+            <if test="currency != null  and currency != ''"> and currency = #{currency}</if>
+            <if test="qtyMin != null "> and qty_min = #{qtyMin}</if>
+            <if test="price != null "> and price = #{price}</if>
+            <if test="taxRate != null "> and tax_rate = #{taxRate}</if>
+            <if test="effectDate != null "> and effect_date = #{effectDate}</if>
+            <if test="expireDate != null "> and expire_date = #{expireDate}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+    </select>
+
+    <select id="selectErpPriceByPriceId" parameterType="Long" resultMap="ErpPriceResult">
+        <include refid="selectErpPriceVo"/>
+        where price_id = #{priceId}
+    </select>
+
+    <insert id="insertErpPrice" parameterType="ErpPrice" useGeneratedKeys="true" keyProperty="priceId">
+        insert into erp_price
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="priceType != null">price_type,</if>
+            <if test="materialId != null">material_id,</if>
+            <if test="partnerId != null">partner_id,</if>
+            <if test="currency != null">currency,</if>
+            <if test="qtyMin != null">qty_min,</if>
+            <if test="price != null">price,</if>
+            <if test="taxRate != null">tax_rate,</if>
+            <if test="effectDate != null">effect_date,</if>
+            <if test="expireDate != null">expire_date,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="priceType != null">#{priceType},</if>
+            <if test="materialId != null">#{materialId},</if>
+            <if test="partnerId != null">#{partnerId},</if>
+            <if test="currency != null">#{currency},</if>
+            <if test="qtyMin != null">#{qtyMin},</if>
+            <if test="price != null">#{price},</if>
+            <if test="taxRate != null">#{taxRate},</if>
+            <if test="effectDate != null">#{effectDate},</if>
+            <if test="expireDate != null">#{expireDate},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateErpPrice" parameterType="ErpPrice">
+        update erp_price
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="priceType != null">price_type = #{priceType},</if>
+            <if test="materialId != null">material_id = #{materialId},</if>
+            <if test="partnerId != null">partner_id = #{partnerId},</if>
+            <if test="currency != null">currency = #{currency},</if>
+            <if test="qtyMin != null">qty_min = #{qtyMin},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="taxRate != null">tax_rate = #{taxRate},</if>
+            <if test="effectDate != null">effect_date = #{effectDate},</if>
+            <if test="expireDate != null">expire_date = #{expireDate},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where price_id = #{priceId}
+    </update>
+
+    <delete id="deleteErpPriceByPriceId" parameterType="Long">
+        update erp_price set del_flag = '2' where price_id = #{priceId}
+    </delete>
+
+    <delete id="deleteErpPriceByPriceIds" parameterType="String">
+        update erp_price set del_flag = '2' where price_id in
+        <foreach item="priceId" collection="array" open="(" separator="," close=")">
+            #{priceId}
+        </foreach>
+    </delete>
+</mapper>

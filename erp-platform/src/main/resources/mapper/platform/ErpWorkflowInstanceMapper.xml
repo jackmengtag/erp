@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.platform.mapper.ErpWorkflowInstanceMapper">
+
+    <resultMap type="ErpWorkflowInstance" id="ErpWorkflowInstanceResult">
+        <result property="instanceId"    column="instance_id"    />
+        <result property="wfId"    column="wf_id"    />
+        <result property="bizType"    column="biz_type"    />
+        <result property="bizId"    column="biz_id"    />
+        <result property="bizTitle"    column="biz_title"    />
+        <result property="amount"    column="amount"    />
+        <result property="currentNode"    column="current_node"    />
+        <result property="status"    column="status"    />
+        <result property="submitBy"    column="submit_by"    />
+        <result property="submitTime"    column="submit_time"    />
+        <result property="finishTime"    column="finish_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectErpWorkflowInstanceVo">
+        select instance_id, wf_id, biz_type, biz_id, biz_title, amount, current_node, status, submit_by, submit_time, finish_time, create_by, create_time, update_by, update_time, remark from erp_workflow_instance
+    </sql>
+
+    <select id="selectErpWorkflowInstanceList" parameterType="ErpWorkflowInstance" resultMap="ErpWorkflowInstanceResult">
+        <include refid="selectErpWorkflowInstanceVo"/>
+        <where>
+            <if test="wfId != null "> and wf_id = #{wfId}</if>
+            <if test="bizType != null  and bizType != ''"> and biz_type = #{bizType}</if>
+            <if test="bizId != null  and bizId != ''"> and biz_id = #{bizId}</if>
+            <if test="bizTitle != null  and bizTitle != ''"> and biz_title like concat('%', #{bizTitle}, '%')</if>
+            <if test="amount != null "> and amount = #{amount}</if>
+            <if test="currentNode != null  and currentNode != ''"> and current_node = #{currentNode}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="submitBy != null  and submitBy != ''"> and submit_by = #{submitBy}</if>
+            <if test="submitTime != null "> and submit_time = #{submitTime}</if>
+            <if test="finishTime != null "> and finish_time = #{finishTime}</if>
+        </where>
+    </select>
+
+    <select id="selectErpWorkflowInstanceByInstanceId" parameterType="Long" resultMap="ErpWorkflowInstanceResult">
+        <include refid="selectErpWorkflowInstanceVo"/>
+        where instance_id = #{instanceId}
+    </select>
+
+    <insert id="insertErpWorkflowInstance" parameterType="ErpWorkflowInstance" useGeneratedKeys="true" keyProperty="instanceId">
+        insert into erp_workflow_instance
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="wfId != null">wf_id,</if>
+            <if test="bizType != null">biz_type,</if>
+            <if test="bizId != null">biz_id,</if>
+            <if test="bizTitle != null">biz_title,</if>
+            <if test="amount != null">amount,</if>
+            <if test="currentNode != null">current_node,</if>
+            <if test="status != null">status,</if>
+            <if test="submitBy != null">submit_by,</if>
+            <if test="submitTime != null">submit_time,</if>
+            <if test="finishTime != null">finish_time,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="wfId != null">#{wfId},</if>
+            <if test="bizType != null">#{bizType},</if>
+            <if test="bizId != null">#{bizId},</if>
+            <if test="bizTitle != null">#{bizTitle},</if>
+            <if test="amount != null">#{amount},</if>
+            <if test="currentNode != null">#{currentNode},</if>
+            <if test="status != null">#{status},</if>
+            <if test="submitBy != null">#{submitBy},</if>
+            <if test="submitTime != null">#{submitTime},</if>
+            <if test="finishTime != null">#{finishTime},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateErpWorkflowInstance" parameterType="ErpWorkflowInstance">
+        update erp_workflow_instance
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="wfId != null">wf_id = #{wfId},</if>
+            <if test="bizType != null">biz_type = #{bizType},</if>
+            <if test="bizId != null">biz_id = #{bizId},</if>
+            <if test="bizTitle != null">biz_title = #{bizTitle},</if>
+            <if test="amount != null">amount = #{amount},</if>
+            <if test="currentNode != null">current_node = #{currentNode},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="submitBy != null">submit_by = #{submitBy},</if>
+            <if test="submitTime != null">submit_time = #{submitTime},</if>
+            <if test="finishTime != null">finish_time = #{finishTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where instance_id = #{instanceId}
+    </update>
+
+    <delete id="deleteErpWorkflowInstanceByInstanceId" parameterType="Long">
+        delete from erp_workflow_instance where instance_id = #{instanceId}
+    </delete>
+
+    <delete id="deleteErpWorkflowInstanceByInstanceIds" parameterType="String">
+        delete from erp_workflow_instance where instance_id in
+        <foreach item="instanceId" collection="array" open="(" separator="," close=")">
+            #{instanceId}
+        </foreach>
+    </delete>
+</mapper>

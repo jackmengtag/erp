@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.finance.mapper.ErpPayableMapper">
+
+    <resultMap type="ErpPayable" id="ErpPayableResult">
+        <result property="apId"    column="ap_id"    />
+        <result property="apCode"    column="ap_code"    />
+        <result property="supplierId"    column="supplier_id"    />
+        <result property="sourceType"    column="source_type"    />
+        <result property="sourceId"    column="source_id"    />
+        <result property="bizDate"    column="biz_date"    />
+        <result property="dueDate"    column="due_date"    />
+        <result property="amount"    column="amount"    />
+        <result property="settledAmount"    column="settled_amount"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectErpPayableVo">
+        select ap_id, ap_code, supplier_id, source_type, source_id, biz_date, due_date, amount, settled_amount, status, create_by, create_time, update_by, update_time, remark from erp_payable
+    </sql>
+
+    <select id="selectErpPayableList" parameterType="ErpPayable" resultMap="ErpPayableResult">
+        <include refid="selectErpPayableVo"/>
+        <where>
+            del_flag = '0'
+            <if test="apCode != null  and apCode != ''"> and ap_code like concat('%', #{apCode}, '%')</if>
+            <if test="supplierId != null "> and supplier_id = #{supplierId}</if>
+            <if test="sourceType != null  and sourceType != ''"> and source_type = #{sourceType}</if>
+            <if test="sourceId != null "> and source_id = #{sourceId}</if>
+            <if test="bizDate != null "> and biz_date = #{bizDate}</if>
+            <if test="dueDate != null "> and due_date = #{dueDate}</if>
+            <if test="amount != null "> and amount = #{amount}</if>
+            <if test="settledAmount != null "> and settled_amount = #{settledAmount}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+    </select>
+
+    <select id="selectErpPayableByApId" parameterType="Long" resultMap="ErpPayableResult">
+        <include refid="selectErpPayableVo"/>
+        where ap_id = #{apId}
+    </select>
+
+    <insert id="insertErpPayable" parameterType="ErpPayable" useGeneratedKeys="true" keyProperty="apId">
+        insert into erp_payable
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="apCode != null and apCode != ''">ap_code,</if>
+            <if test="supplierId != null">supplier_id,</if>
+            <if test="sourceType != null">source_type,</if>
+            <if test="sourceId != null">source_id,</if>
+            <if test="bizDate != null">biz_date,</if>
+            <if test="dueDate != null">due_date,</if>
+            <if test="amount != null">amount,</if>
+            <if test="settledAmount != null">settled_amount,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="apCode != null and apCode != ''">#{apCode},</if>
+            <if test="supplierId != null">#{supplierId},</if>
+            <if test="sourceType != null">#{sourceType},</if>
+            <if test="sourceId != null">#{sourceId},</if>
+            <if test="bizDate != null">#{bizDate},</if>
+            <if test="dueDate != null">#{dueDate},</if>
+            <if test="amount != null">#{amount},</if>
+            <if test="settledAmount != null">#{settledAmount},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateErpPayable" parameterType="ErpPayable">
+        update erp_payable
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="apCode != null and apCode != ''">ap_code = #{apCode},</if>
+            <if test="supplierId != null">supplier_id = #{supplierId},</if>
+            <if test="sourceType != null">source_type = #{sourceType},</if>
+            <if test="sourceId != null">source_id = #{sourceId},</if>
+            <if test="bizDate != null">biz_date = #{bizDate},</if>
+            <if test="dueDate != null">due_date = #{dueDate},</if>
+            <if test="amount != null">amount = #{amount},</if>
+            <if test="settledAmount != null">settled_amount = #{settledAmount},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where ap_id = #{apId}
+    </update>
+
+    <delete id="deleteErpPayableByApId" parameterType="Long">
+        update erp_payable set del_flag = '2' where ap_id = #{apId}
+    </delete>
+
+    <delete id="deleteErpPayableByApIds" parameterType="String">
+        update erp_payable set del_flag = '2' where ap_id in
+        <foreach item="apId" collection="array" open="(" separator="," close=")">
+            #{apId}
+        </foreach>
+    </delete>
+</mapper>

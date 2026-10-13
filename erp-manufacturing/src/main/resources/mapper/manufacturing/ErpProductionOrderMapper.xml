@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.manufacturing.mapper.ErpProductionOrderMapper">
+
+    <resultMap type="ErpProductionOrder" id="ErpProductionOrderResult">
+        <result property="moId"    column="mo_id"    />
+        <result property="moCode"    column="mo_code"    />
+        <result property="materialId"    column="material_id"    />
+        <result property="bomId"    column="bom_id"    />
+        <result property="routingId"    column="routing_id"    />
+        <result property="planQty"    column="plan_qty"    />
+        <result property="finishQty"    column="finish_qty"    />
+        <result property="scrapQty"    column="scrap_qty"    />
+        <result property="planStartDate"    column="plan_start_date"    />
+        <result property="planEndDate"    column="plan_end_date"    />
+        <result property="orderId"    column="order_id"    />
+        <result property="warehouseId"    column="warehouse_id"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectErpProductionOrderVo">
+        select mo_id, mo_code, material_id, bom_id, routing_id, plan_qty, finish_qty, scrap_qty, plan_start_date, plan_end_date, order_id, warehouse_id, status, create_by, create_time, update_by, update_time, remark from erp_production_order
+    </sql>
+
+    <select id="selectErpProductionOrderList" parameterType="ErpProductionOrder" resultMap="ErpProductionOrderResult">
+        <include refid="selectErpProductionOrderVo"/>
+        <where>
+            del_flag = '0'
+            <if test="moCode != null  and moCode != ''"> and mo_code like concat('%', #{moCode}, '%')</if>
+            <if test="materialId != null "> and material_id = #{materialId}</if>
+            <if test="bomId != null "> and bom_id = #{bomId}</if>
+            <if test="routingId != null "> and routing_id = #{routingId}</if>
+            <if test="planQty != null "> and plan_qty = #{planQty}</if>
+            <if test="finishQty != null "> and finish_qty = #{finishQty}</if>
+            <if test="scrapQty != null "> and scrap_qty = #{scrapQty}</if>
+            <if test="planStartDate != null "> and plan_start_date = #{planStartDate}</if>
+            <if test="planEndDate != null "> and plan_end_date = #{planEndDate}</if>
+            <if test="orderId != null "> and order_id = #{orderId}</if>
+            <if test="warehouseId != null "> and warehouse_id = #{warehouseId}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+    </select>
+
+    <select id="selectErpProductionOrderByMoId" parameterType="Long" resultMap="ErpProductionOrderResult">
+        <include refid="selectErpProductionOrderVo"/>
+        where mo_id = #{moId}
+    </select>
+
+    <insert id="insertErpProductionOrder" parameterType="ErpProductionOrder" useGeneratedKeys="true" keyProperty="moId">
+        insert into erp_production_order
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="moCode != null and moCode != ''">mo_code,</if>
+            <if test="materialId != null">material_id,</if>
+            <if test="bomId != null">bom_id,</if>
+            <if test="routingId != null">routing_id,</if>
+            <if test="planQty != null">plan_qty,</if>
+            <if test="finishQty != null">finish_qty,</if>
+            <if test="scrapQty != null">scrap_qty,</if>
+            <if test="planStartDate != null">plan_start_date,</if>
+            <if test="planEndDate != null">plan_end_date,</if>
+            <if test="orderId != null">order_id,</if>
+            <if test="warehouseId != null">warehouse_id,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="moCode != null and moCode != ''">#{moCode},</if>
+            <if test="materialId != null">#{materialId},</if>
+            <if test="bomId != null">#{bomId},</if>
+            <if test="routingId != null">#{routingId},</if>
+            <if test="planQty != null">#{planQty},</if>
+            <if test="finishQty != null">#{finishQty},</if>
+            <if test="scrapQty != null">#{scrapQty},</if>
+            <if test="planStartDate != null">#{planStartDate},</if>
+            <if test="planEndDate != null">#{planEndDate},</if>
+            <if test="orderId != null">#{orderId},</if>
+            <if test="warehouseId != null">#{warehouseId},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateErpProductionOrder" parameterType="ErpProductionOrder">
+        update erp_production_order
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="moCode != null and moCode != ''">mo_code = #{moCode},</if>
+            <if test="materialId != null">material_id = #{materialId},</if>
+            <if test="bomId != null">bom_id = #{bomId},</if>
+            <if test="routingId != null">routing_id = #{routingId},</if>
+            <if test="planQty != null">plan_qty = #{planQty},</if>
+            <if test="finishQty != null">finish_qty = #{finishQty},</if>
+            <if test="scrapQty != null">scrap_qty = #{scrapQty},</if>
+            <if test="planStartDate != null">plan_start_date = #{planStartDate},</if>
+            <if test="planEndDate != null">plan_end_date = #{planEndDate},</if>
+            <if test="orderId != null">order_id = #{orderId},</if>
+            <if test="warehouseId != null">warehouse_id = #{warehouseId},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where mo_id = #{moId}
+    </update>
+
+    <delete id="deleteErpProductionOrderByMoId" parameterType="Long">
+        update erp_production_order set del_flag = '2' where mo_id = #{moId}
+    </delete>
+
+    <delete id="deleteErpProductionOrderByMoIds" parameterType="String">
+        update erp_production_order set del_flag = '2' where mo_id in
+        <foreach item="moId" collection="array" open="(" separator="," close=")">
+            #{moId}
+        </foreach>
+    </delete>
+</mapper>

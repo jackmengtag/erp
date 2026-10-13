@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.sales.mapper.ErpDeliveryMapper">
+
+    <resultMap type="ErpDelivery" id="ErpDeliveryResult">
+        <result property="deliveryId"    column="delivery_id"    />
+        <result property="deliveryCode"    column="delivery_code"    />
+        <result property="orderId"    column="order_id"    />
+        <result property="customerId"    column="customer_id"    />
+        <result property="warehouseId"    column="warehouse_id"    />
+        <result property="deliveryDate"    column="delivery_date"    />
+        <result property="logisticsNo"    column="logistics_no"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <resultMap id="ErpDeliveryErpDeliveryLineResult" type="ErpDelivery" extends="ErpDeliveryResult">
+        <collection property="erpDeliveryLineList" notNullColumn="sub_line_id" javaType="java.util.List" resultMap="ErpDeliveryLineResult" />
+    </resultMap>
+
+    <resultMap type="ErpDeliveryLine" id="ErpDeliveryLineResult">
+        <result property="lineId"    column="sub_line_id"    />
+        <result property="deliveryId"    column="sub_delivery_id"    />
+        <result property="lineNo"    column="sub_line_no"    />
+        <result property="materialId"    column="sub_material_id"    />
+        <result property="batchNo"    column="sub_batch_no"    />
+        <result property="qty"    column="sub_qty"    />
+        <result property="createTime"    column="sub_create_time"    />
+    </resultMap>
+
+    <sql id="selectErpDeliveryVo">
+        select delivery_id, delivery_code, order_id, customer_id, warehouse_id, delivery_date, logistics_no, status, create_by, create_time, update_by, update_time, remark from erp_delivery
+    </sql>
+
+    <select id="selectErpDeliveryList" parameterType="ErpDelivery" resultMap="ErpDeliveryResult">
+        <include refid="selectErpDeliveryVo"/>
+        <where>
+            del_flag = '0'
+            <if test="deliveryCode != null  and deliveryCode != ''"> and delivery_code like concat('%', #{deliveryCode}, '%')</if>
+            <if test="orderId != null "> and order_id = #{orderId}</if>
+            <if test="customerId != null "> and customer_id = #{customerId}</if>
+            <if test="warehouseId != null "> and warehouse_id = #{warehouseId}</if>
+            <if test="deliveryDate != null "> and delivery_date = #{deliveryDate}</if>
+            <if test="logisticsNo != null  and logisticsNo != ''"> and logistics_no like concat('%', #{logisticsNo}, '%')</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+    </select>
+
+    <select id="selectErpDeliveryByDeliveryId" parameterType="Long" resultMap="ErpDeliveryErpDeliveryLineResult">
+        select a.delivery_id, a.delivery_code, a.order_id, a.customer_id, a.warehouse_id, a.delivery_date, a.logistics_no, a.status, a.create_by, a.create_time, a.update_by, a.update_time, a.remark,
+               b.line_id as sub_line_id, b.delivery_id as sub_delivery_id, b.line_no as sub_line_no, b.material_id as sub_material_id, b.batch_no as sub_batch_no, b.qty as sub_qty, b.create_time as sub_create_time
+        from erp_delivery a
+        left join erp_delivery_line b on b.delivery_id = a.delivery_id
+        where a.delivery_id = #{deliveryId}
+    </select>
+
+    <insert id="insertErpDelivery" parameterType="ErpDelivery" useGeneratedKeys="true" keyProperty="deliveryId">
+        insert into erp_delivery
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="deliveryCode != null and deliveryCode != ''">delivery_code,</if>
+            <if test="orderId != null">order_id,</if>
+            <if test="customerId != null">customer_id,</if>
+            <if test="warehouseId != null">warehouse_id,</if>
+            <if test="deliveryDate != null">delivery_date,</if>
+            <if test="logisticsNo != null">logistics_no,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="deliveryCode != null and deliveryCode != ''">#{deliveryCode},</if>
+            <if test="orderId != null">#{orderId},</if>
+            <if test="customerId != null">#{customerId},</if>
+            <if test="warehouseId != null">#{warehouseId},</if>
+            <if test="deliveryDate != null">#{deliveryDate},</if>
+            <if test="logisticsNo != null">#{logisticsNo},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateErpDelivery" parameterType="ErpDelivery">
+        update erp_delivery
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="deliveryCode != null and deliveryCode != ''">delivery_code = #{deliveryCode},</if>
+            <if test="orderId != null">order_id = #{orderId},</if>
+            <if test="customerId != null">customer_id = #{customerId},</if>
+            <if test="warehouseId != null">warehouse_id = #{warehouseId},</if>
+            <if test="deliveryDate != null">delivery_date = #{deliveryDate},</if>
+            <if test="logisticsNo != null">logistics_no = #{logisticsNo},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where delivery_id = #{deliveryId}
+    </update>
+
+    <delete id="deleteErpDeliveryByDeliveryId" parameterType="Long">
+        update erp_delivery set del_flag = '2' where delivery_id = #{deliveryId}
+    </delete>
+
+    <delete id="deleteErpDeliveryByDeliveryIds" parameterType="String">
+        update erp_delivery set del_flag = '2' where delivery_id in
+        <foreach item="deliveryId" collection="array" open="(" separator="," close=")">
+            #{deliveryId}
+        </foreach>
+    </delete>
+
+    <delete id="deleteErpDeliveryLineByDeliveryId" parameterType="Long">
+        delete from erp_delivery_line where delivery_id = #{deliveryId}
+    </delete>
+
+    <delete id="deleteErpDeliveryLineByDeliveryIds" parameterType="String">
+        delete from erp_delivery_line where delivery_id in
+        <foreach item="deliveryId" collection="array" open="(" separator="," close=")">
+            #{deliveryId}
+        </foreach>
+    </delete>
+
+    <insert id="batchErpDeliveryLine">
+        insert into erp_delivery_line( line_id, delivery_id, line_no, material_id, batch_no, qty, create_time) values
+        <foreach item="item" index="index" collection="list" separator=",">
+            ( #{item.lineId}, #{item.deliveryId}, #{item.lineNo}, #{item.materialId}, #{item.batchNo}, #{item.qty}, #{item.createTime})
+        </foreach>
+    </insert>
+</mapper>

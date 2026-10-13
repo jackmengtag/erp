@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.mdm.mapper.ErpWorkCenterMapper">
+
+    <resultMap type="ErpWorkCenter" id="ErpWorkCenterResult">
+        <result property="wcId"    column="wc_id"    />
+        <result property="wcCode"    column="wc_code"    />
+        <result property="wcName"    column="wc_name"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="capacityPerDay"    column="capacity_per_day"    />
+        <result property="costRate"    column="cost_rate"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectErpWorkCenterVo">
+        select wc_id, wc_code, wc_name, dept_id, capacity_per_day, cost_rate, status, create_by, create_time, update_by, update_time, remark from erp_work_center
+    </sql>
+
+    <select id="selectErpWorkCenterList" parameterType="ErpWorkCenter" resultMap="ErpWorkCenterResult">
+        <include refid="selectErpWorkCenterVo"/>
+        <where>
+            del_flag = '0'
+            <if test="wcCode != null  and wcCode != ''"> and wc_code like concat('%', #{wcCode}, '%')</if>
+            <if test="wcName != null  and wcName != ''"> and wc_name like concat('%', #{wcName}, '%')</if>
+            <if test="deptId != null "> and dept_id = #{deptId}</if>
+            <if test="capacityPerDay != null "> and capacity_per_day = #{capacityPerDay}</if>
+            <if test="costRate != null "> and cost_rate = #{costRate}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+    </select>
+
+    <select id="selectErpWorkCenterByWcId" parameterType="Long" resultMap="ErpWorkCenterResult">
+        <include refid="selectErpWorkCenterVo"/>
+        where wc_id = #{wcId}
+    </select>
+
+    <insert id="insertErpWorkCenter" parameterType="ErpWorkCenter" useGeneratedKeys="true" keyProperty="wcId">
+        insert into erp_work_center
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="wcCode != null and wcCode != ''">wc_code,</if>
+            <if test="wcName != null and wcName != ''">wc_name,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="capacityPerDay != null">capacity_per_day,</if>
+            <if test="costRate != null">cost_rate,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="wcCode != null and wcCode != ''">#{wcCode},</if>
+            <if test="wcName != null and wcName != ''">#{wcName},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="capacityPerDay != null">#{capacityPerDay},</if>
+            <if test="costRate != null">#{costRate},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateErpWorkCenter" parameterType="ErpWorkCenter">
+        update erp_work_center
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="wcCode != null and wcCode != ''">wc_code = #{wcCode},</if>
+            <if test="wcName != null and wcName != ''">wc_name = #{wcName},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="capacityPerDay != null">capacity_per_day = #{capacityPerDay},</if>
+            <if test="costRate != null">cost_rate = #{costRate},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where wc_id = #{wcId}
+    </update>
+
+    <delete id="deleteErpWorkCenterByWcId" parameterType="Long">
+        update erp_work_center set del_flag = '2' where wc_id = #{wcId}
+    </delete>
+
+    <delete id="deleteErpWorkCenterByWcIds" parameterType="String">
+        update erp_work_center set del_flag = '2' where wc_id in
+        <foreach item="wcId" collection="array" open="(" separator="," close=")">
+            #{wcId}
+        </foreach>
+    </delete>
+</mapper>

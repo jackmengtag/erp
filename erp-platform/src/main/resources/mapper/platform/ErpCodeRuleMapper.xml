@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.platform.mapper.ErpCodeRuleMapper">
+
+    <resultMap type="ErpCodeRule" id="ErpCodeRuleResult">
+        <result property="ruleId"    column="rule_id"    />
+        <result property="ruleCode"    column="rule_code"    />
+        <result property="ruleName"    column="rule_name"    />
+        <result property="bizObject"    column="biz_object"    />
+        <result property="prefix"    column="prefix"    />
+        <result property="datePattern"    column="date_pattern"    />
+        <result property="seqLength"    column="seq_length"    />
+        <result property="seqReset"    column="seq_reset"    />
+        <result property="separator"    column="separator"    />
+        <result property="sample"    column="sample"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectErpCodeRuleVo">
+        select rule_id, rule_code, rule_name, biz_object, prefix, date_pattern, seq_length, seq_reset, separator, sample, status, create_by, create_time, update_by, update_time, remark from erp_code_rule
+    </sql>
+
+    <select id="selectErpCodeRuleList" parameterType="ErpCodeRule" resultMap="ErpCodeRuleResult">
+        <include refid="selectErpCodeRuleVo"/>
+        <where>
+            del_flag = '0'
+            <if test="ruleCode != null  and ruleCode != ''"> and rule_code like concat('%', #{ruleCode}, '%')</if>
+            <if test="ruleName != null  and ruleName != ''"> and rule_name like concat('%', #{ruleName}, '%')</if>
+            <if test="bizObject != null  and bizObject != ''"> and biz_object = #{bizObject}</if>
+            <if test="prefix != null  and prefix != ''"> and prefix = #{prefix}</if>
+            <if test="datePattern != null  and datePattern != ''"> and date_pattern = #{datePattern}</if>
+            <if test="seqLength != null "> and seq_length = #{seqLength}</if>
+            <if test="seqReset != null  and seqReset != ''"> and seq_reset = #{seqReset}</if>
+            <if test="separator != null  and separator != ''"> and separator = #{separator}</if>
+            <if test="sample != null  and sample != ''"> and sample = #{sample}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+    </select>
+
+    <select id="selectErpCodeRuleByRuleId" parameterType="Long" resultMap="ErpCodeRuleResult">
+        <include refid="selectErpCodeRuleVo"/>
+        where rule_id = #{ruleId}
+    </select>
+
+    <select id="selectErpCodeRuleByBizObject" parameterType="String" resultMap="ErpCodeRuleResult">
+        <include refid="selectErpCodeRuleVo"/>
+        where del_flag = '0' and biz_object = #{bizObject} limit 1
+    </select>
+
+    <insert id="insertErpCodeRule" parameterType="ErpCodeRule" useGeneratedKeys="true" keyProperty="ruleId">
+        insert into erp_code_rule
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="ruleCode != null and ruleCode != ''">rule_code,</if>
+            <if test="ruleName != null and ruleName != ''">rule_name,</if>
+            <if test="bizObject != null and bizObject != ''">biz_object,</if>
+            <if test="prefix != null">prefix,</if>
+            <if test="datePattern != null">date_pattern,</if>
+            <if test="seqLength != null">seq_length,</if>
+            <if test="seqReset != null">seq_reset,</if>
+            <if test="separator != null">separator,</if>
+            <if test="sample != null">sample,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="ruleCode != null and ruleCode != ''">#{ruleCode},</if>
+            <if test="ruleName != null and ruleName != ''">#{ruleName},</if>
+            <if test="bizObject != null and bizObject != ''">#{bizObject},</if>
+            <if test="prefix != null">#{prefix},</if>
+            <if test="datePattern != null">#{datePattern},</if>
+            <if test="seqLength != null">#{seqLength},</if>
+            <if test="seqReset != null">#{seqReset},</if>
+            <if test="separator != null">#{separator},</if>
+            <if test="sample != null">#{sample},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateErpCodeRule" parameterType="ErpCodeRule">
+        update erp_code_rule
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="ruleCode != null and ruleCode != ''">rule_code = #{ruleCode},</if>
+            <if test="ruleName != null and ruleName != ''">rule_name = #{ruleName},</if>
+            <if test="bizObject != null and bizObject != ''">biz_object = #{bizObject},</if>
+            <if test="prefix != null">prefix = #{prefix},</if>
+            <if test="datePattern != null">date_pattern = #{datePattern},</if>
+            <if test="seqLength != null">seq_length = #{seqLength},</if>
+            <if test="seqReset != null">seq_reset = #{seqReset},</if>
+            <if test="separator != null">separator = #{separator},</if>
+            <if test="sample != null">sample = #{sample},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where rule_id = #{ruleId}
+    </update>
+
+    <delete id="deleteErpCodeRuleByRuleId" parameterType="Long">
+        update erp_code_rule set del_flag = '2' where rule_id = #{ruleId}
+    </delete>
+
+    <delete id="deleteErpCodeRuleByRuleIds" parameterType="String">
+        update erp_code_rule set del_flag = '2' where rule_id in
+        <foreach item="ruleId" collection="array" open="(" separator="," close=")">
+            #{ruleId}
+        </foreach>
+    </delete>
+</mapper>

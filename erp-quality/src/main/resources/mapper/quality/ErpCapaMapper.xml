@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.quality.mapper.ErpCapaMapper">
+
+    <resultMap type="ErpCapa" id="ErpCapaResult">
+        <result property="capaId"    column="capa_id"    />
+        <result property="capaCode"    column="capa_code"    />
+        <result property="capaType"    column="capa_type"    />
+        <result property="sourceDesc"    column="source_desc"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="measure"    column="measure"    />
+        <result property="dueDate"    column="due_date"    />
+        <result property="verifyResult"    column="verify_result"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectErpCapaVo">
+        select capa_id, capa_code, capa_type, source_desc, dept_id, measure, due_date, verify_result, status, create_by, create_time, update_by, update_time, remark from erp_capa
+    </sql>
+
+    <select id="selectErpCapaList" parameterType="ErpCapa" resultMap="ErpCapaResult">
+        <include refid="selectErpCapaVo"/>
+        <where>
+            del_flag = '0'
+            <if test="capaCode != null  and capaCode != ''"> and capa_code like concat('%', #{capaCode}, '%')</if>
+            <if test="capaType != null  and capaType != ''"> and capa_type = #{capaType}</if>
+            <if test="sourceDesc != null  and sourceDesc != ''"> and source_desc like concat('%', #{sourceDesc}, '%')</if>
+            <if test="deptId != null "> and dept_id = #{deptId}</if>
+            <if test="dueDate != null "> and due_date = #{dueDate}</if>
+            <if test="verifyResult != null  and verifyResult != ''"> and verify_result = #{verifyResult}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+    </select>
+
+    <select id="selectErpCapaByCapaId" parameterType="Long" resultMap="ErpCapaResult">
+        <include refid="selectErpCapaVo"/>
+        where capa_id = #{capaId}
+    </select>
+
+    <insert id="insertErpCapa" parameterType="ErpCapa" useGeneratedKeys="true" keyProperty="capaId">
+        insert into erp_capa
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="capaCode != null and capaCode != ''">capa_code,</if>
+            <if test="capaType != null">capa_type,</if>
+            <if test="sourceDesc != null">source_desc,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="measure != null">measure,</if>
+            <if test="dueDate != null">due_date,</if>
+            <if test="verifyResult != null">verify_result,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="capaCode != null and capaCode != ''">#{capaCode},</if>
+            <if test="capaType != null">#{capaType},</if>
+            <if test="sourceDesc != null">#{sourceDesc},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="measure != null">#{measure},</if>
+            <if test="dueDate != null">#{dueDate},</if>
+            <if test="verifyResult != null">#{verifyResult},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateErpCapa" parameterType="ErpCapa">
+        update erp_capa
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="capaCode != null and capaCode != ''">capa_code = #{capaCode},</if>
+            <if test="capaType != null">capa_type = #{capaType},</if>
+            <if test="sourceDesc != null">source_desc = #{sourceDesc},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="measure != null">measure = #{measure},</if>
+            <if test="dueDate != null">due_date = #{dueDate},</if>
+            <if test="verifyResult != null">verify_result = #{verifyResult},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where capa_id = #{capaId}
+    </update>
+
+    <delete id="deleteErpCapaByCapaId" parameterType="Long">
+        update erp_capa set del_flag = '2' where capa_id = #{capaId}
+    </delete>
+
+    <delete id="deleteErpCapaByCapaIds" parameterType="String">
+        update erp_capa set del_flag = '2' where capa_id in
+        <foreach item="capaId" collection="array" open="(" separator="," close=")">
+            #{capaId}
+        </foreach>
+    </delete>
+</mapper>

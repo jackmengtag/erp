@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.platform.mapper.ErpCodeSerialMapper">
+
+    <resultMap type="ErpCodeSerial" id="ErpCodeSerialResult">
+        <result property="serialId"    column="serial_id"    />
+        <result property="ruleCode"    column="rule_code"    />
+        <result property="periodKey"    column="period_key"    />
+        <result property="currentSeq"    column="current_seq"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectErpCodeSerialVo">
+        select serial_id, rule_code, period_key, current_seq, update_time from erp_code_serial
+    </sql>
+
+    <select id="selectErpCodeSerialList" parameterType="ErpCodeSerial" resultMap="ErpCodeSerialResult">
+        <include refid="selectErpCodeSerialVo"/>
+        <where>
+            <if test="ruleCode != null  and ruleCode != ''"> and rule_code = #{ruleCode}</if>
+            <if test="periodKey != null  and periodKey != ''"> and period_key = #{periodKey}</if>
+            <if test="currentSeq != null "> and current_seq = #{currentSeq}</if>
+        </where>
+    </select>
+
+    <select id="selectErpCodeSerialBySerialId" parameterType="Long" resultMap="ErpCodeSerialResult">
+        <include refid="selectErpCodeSerialVo"/>
+        where serial_id = #{serialId}
+    </select>
+
+    <select id="selectErpCodeSerialForUpdate" resultMap="ErpCodeSerialResult">
+        <include refid="selectErpCodeSerialVo"/>
+        where rule_code = #{ruleCode} and period_key = #{periodKey} for update
+    </select>
+
+    <insert id="insertErpCodeSerial" parameterType="ErpCodeSerial" useGeneratedKeys="true" keyProperty="serialId">
+        insert into erp_code_serial
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="ruleCode != null and ruleCode != ''">rule_code,</if>
+            <if test="periodKey != null and periodKey != ''">period_key,</if>
+            <if test="currentSeq != null">current_seq,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="ruleCode != null and ruleCode != ''">#{ruleCode},</if>
+            <if test="periodKey != null and periodKey != ''">#{periodKey},</if>
+            <if test="currentSeq != null">#{currentSeq},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateErpCodeSerial" parameterType="ErpCodeSerial">
+        update erp_code_serial
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="ruleCode != null and ruleCode != ''">rule_code = #{ruleCode},</if>
+            <if test="periodKey != null and periodKey != ''">period_key = #{periodKey},</if>
+            <if test="currentSeq != null">current_seq = #{currentSeq},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where serial_id = #{serialId}
+    </update>
+
+    <delete id="deleteErpCodeSerialBySerialId" parameterType="Long">
+        delete from erp_code_serial where serial_id = #{serialId}
+    </delete>
+
+    <delete id="deleteErpCodeSerialBySerialIds" parameterType="String">
+        delete from erp_code_serial where serial_id in
+        <foreach item="serialId" collection="array" open="(" separator="," close=")">
+            #{serialId}
+        </foreach>
+    </delete>
+</mapper>

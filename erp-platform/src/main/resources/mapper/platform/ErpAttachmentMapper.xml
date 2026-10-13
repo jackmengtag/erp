@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.platform.mapper.ErpAttachmentMapper">
+
+    <resultMap type="ErpAttachment" id="ErpAttachmentResult">
+        <result property="attachmentId"    column="attachment_id"    />
+        <result property="bizType"    column="biz_type"    />
+        <result property="bizId"    column="biz_id"    />
+        <result property="fileName"    column="file_name"    />
+        <result property="filePath"    column="file_path"    />
+        <result property="fileUrl"    column="file_url"    />
+        <result property="fileSuffix"    column="file_suffix"    />
+        <result property="fileSize"    column="file_size"    />
+        <result property="version"    column="version"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectErpAttachmentVo">
+        select attachment_id, biz_type, biz_id, file_name, file_path, file_url, file_suffix, file_size, version, create_by, create_time, update_by, update_time, remark from erp_attachment
+    </sql>
+
+    <select id="selectErpAttachmentList" parameterType="ErpAttachment" resultMap="ErpAttachmentResult">
+        <include refid="selectErpAttachmentVo"/>
+        <where>
+            del_flag = '0'
+            <if test="bizType != null  and bizType != ''"> and biz_type = #{bizType}</if>
+            <if test="bizId != null  and bizId != ''"> and biz_id = #{bizId}</if>
+            <if test="fileName != null  and fileName != ''"> and file_name like concat('%', #{fileName}, '%')</if>
+            <if test="filePath != null  and filePath != ''"> and file_path = #{filePath}</if>
+            <if test="fileUrl != null  and fileUrl != ''"> and file_url = #{fileUrl}</if>
+            <if test="fileSuffix != null  and fileSuffix != ''"> and file_suffix = #{fileSuffix}</if>
+            <if test="fileSize != null "> and file_size = #{fileSize}</if>
+            <if test="version != null "> and version = #{version}</if>
+        </where>
+    </select>
+
+    <select id="selectErpAttachmentByAttachmentId" parameterType="Long" resultMap="ErpAttachmentResult">
+        <include refid="selectErpAttachmentVo"/>
+        where attachment_id = #{attachmentId}
+    </select>
+
+    <insert id="insertErpAttachment" parameterType="ErpAttachment" useGeneratedKeys="true" keyProperty="attachmentId">
+        insert into erp_attachment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="bizType != null">biz_type,</if>
+            <if test="bizId != null">biz_id,</if>
+            <if test="fileName != null and fileName != ''">file_name,</if>
+            <if test="filePath != null and filePath != ''">file_path,</if>
+            <if test="fileUrl != null">file_url,</if>
+            <if test="fileSuffix != null">file_suffix,</if>
+            <if test="fileSize != null">file_size,</if>
+            <if test="version != null">version,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="bizType != null">#{bizType},</if>
+            <if test="bizId != null">#{bizId},</if>
+            <if test="fileName != null and fileName != ''">#{fileName},</if>
+            <if test="filePath != null and filePath != ''">#{filePath},</if>
+            <if test="fileUrl != null">#{fileUrl},</if>
+            <if test="fileSuffix != null">#{fileSuffix},</if>
+            <if test="fileSize != null">#{fileSize},</if>
+            <if test="version != null">#{version},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateErpAttachment" parameterType="ErpAttachment">
+        update erp_attachment
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="bizType != null">biz_type = #{bizType},</if>
+            <if test="bizId != null">biz_id = #{bizId},</if>
+            <if test="fileName != null and fileName != ''">file_name = #{fileName},</if>
+            <if test="filePath != null and filePath != ''">file_path = #{filePath},</if>
+            <if test="fileUrl != null">file_url = #{fileUrl},</if>
+            <if test="fileSuffix != null">file_suffix = #{fileSuffix},</if>
+            <if test="fileSize != null">file_size = #{fileSize},</if>
+            <if test="version != null">version = #{version},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where attachment_id = #{attachmentId}
+    </update>
+
+    <delete id="deleteErpAttachmentByAttachmentId" parameterType="Long">
+        update erp_attachment set del_flag = '2' where attachment_id = #{attachmentId}
+    </delete>
+
+    <delete id="deleteErpAttachmentByAttachmentIds" parameterType="String">
+        update erp_attachment set del_flag = '2' where attachment_id in
+        <foreach item="attachmentId" collection="array" open="(" separator="," close=")">
+            #{attachmentId}
+        </foreach>
+    </delete>
+</mapper>

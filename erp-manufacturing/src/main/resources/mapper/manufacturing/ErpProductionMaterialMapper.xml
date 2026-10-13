@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.manufacturing.mapper.ErpProductionMaterialMapper">
+
+    <resultMap type="ErpProductionMaterial" id="ErpProductionMaterialResult">
+        <result property="materialReqId"    column="material_req_id"    />
+        <result property="moId"    column="mo_id"    />
+        <result property="materialId"    column="material_id"    />
+        <result property="requireQty"    column="require_qty"    />
+        <result property="issuedQty"    column="issued_qty"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectErpProductionMaterialVo">
+        select material_req_id, mo_id, material_id, require_qty, issued_qty, create_time from erp_production_material
+    </sql>
+
+    <select id="selectErpProductionMaterialList" parameterType="ErpProductionMaterial" resultMap="ErpProductionMaterialResult">
+        <include refid="selectErpProductionMaterialVo"/>
+        <where>
+            <if test="moId != null "> and mo_id = #{moId}</if>
+            <if test="materialId != null "> and material_id = #{materialId}</if>
+            <if test="requireQty != null "> and require_qty = #{requireQty}</if>
+            <if test="issuedQty != null "> and issued_qty = #{issuedQty}</if>
+        </where>
+    </select>
+
+    <select id="selectErpProductionMaterialByMaterialReqId" parameterType="Long" resultMap="ErpProductionMaterialResult">
+        <include refid="selectErpProductionMaterialVo"/>
+        where material_req_id = #{materialReqId}
+    </select>
+
+    <insert id="insertErpProductionMaterial" parameterType="ErpProductionMaterial" useGeneratedKeys="true" keyProperty="materialReqId">
+        insert into erp_production_material
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="moId != null">mo_id,</if>
+            <if test="materialId != null">material_id,</if>
+            <if test="requireQty != null">require_qty,</if>
+            <if test="issuedQty != null">issued_qty,</if>
+            <if test="createTime != null">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="moId != null">#{moId},</if>
+            <if test="materialId != null">#{materialId},</if>
+            <if test="requireQty != null">#{requireQty},</if>
+            <if test="issuedQty != null">#{issuedQty},</if>
+            <if test="createTime != null">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateErpProductionMaterial" parameterType="ErpProductionMaterial">
+        update erp_production_material
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="moId != null">mo_id = #{moId},</if>
+            <if test="materialId != null">material_id = #{materialId},</if>
+            <if test="requireQty != null">require_qty = #{requireQty},</if>
+            <if test="issuedQty != null">issued_qty = #{issuedQty},</if>
+        </trim>
+        where material_req_id = #{materialReqId}
+    </update>
+
+    <delete id="deleteErpProductionMaterialByMaterialReqId" parameterType="Long">
+        delete from erp_production_material where material_req_id = #{materialReqId}
+    </delete>
+
+    <delete id="deleteErpProductionMaterialByMaterialReqIds" parameterType="String">
+        delete from erp_production_material where material_req_id in
+        <foreach item="materialReqId" collection="array" open="(" separator="," close=")">
+            #{materialReqId}
+        </foreach>
+    </delete>
+</mapper>

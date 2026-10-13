@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.manufacturing.mapper.ErpProductionPickingMapper">
+
+    <resultMap type="ErpProductionPicking" id="ErpProductionPickingResult">
+        <result property="pickingId"    column="picking_id"    />
+        <result property="pickingCode"    column="picking_code"    />
+        <result property="moId"    column="mo_id"    />
+        <result property="pickingType"    column="picking_type"    />
+        <result property="warehouseId"    column="warehouse_id"    />
+        <result property="pickingDate"    column="picking_date"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <resultMap id="ErpProductionPickingErpProductionPickingLineResult" type="ErpProductionPicking" extends="ErpProductionPickingResult">
+        <collection property="erpProductionPickingLineList" notNullColumn="sub_line_id" javaType="java.util.List" resultMap="ErpProductionPickingLineResult" />
+    </resultMap>
+
+    <resultMap type="ErpProductionPickingLine" id="ErpProductionPickingLineResult">
+        <result property="lineId"    column="sub_line_id"    />
+        <result property="pickingId"    column="sub_picking_id"    />
+        <result property="materialId"    column="sub_material_id"    />
+        <result property="batchNo"    column="sub_batch_no"    />
+        <result property="qty"    column="sub_qty"    />
+        <result property="createTime"    column="sub_create_time"    />
+    </resultMap>
+
+    <sql id="selectErpProductionPickingVo">
+        select picking_id, picking_code, mo_id, picking_type, warehouse_id, picking_date, status, create_by, create_time, update_by, update_time, remark from erp_production_picking
+    </sql>
+
+    <select id="selectErpProductionPickingList" parameterType="ErpProductionPicking" resultMap="ErpProductionPickingResult">
+        <include refid="selectErpProductionPickingVo"/>
+        <where>
+            del_flag = '0'
+            <if test="pickingCode != null  and pickingCode != ''"> and picking_code like concat('%', #{pickingCode}, '%')</if>
+            <if test="moId != null "> and mo_id = #{moId}</if>
+            <if test="pickingType != null  and pickingType != ''"> and picking_type = #{pickingType}</if>
+            <if test="warehouseId != null "> and warehouse_id = #{warehouseId}</if>
+            <if test="pickingDate != null "> and picking_date = #{pickingDate}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+    </select>
+
+    <select id="selectErpProductionPickingByPickingId" parameterType="Long" resultMap="ErpProductionPickingErpProductionPickingLineResult">
+        select a.picking_id, a.picking_code, a.mo_id, a.picking_type, a.warehouse_id, a.picking_date, a.status, a.create_by, a.create_time, a.update_by, a.update_time, a.remark,
+               b.line_id as sub_line_id, b.picking_id as sub_picking_id, b.material_id as sub_material_id, b.batch_no as sub_batch_no, b.qty as sub_qty, b.create_time as sub_create_time
+        from erp_production_picking a
+        left join erp_production_picking_line b on b.picking_id = a.picking_id
+        where a.picking_id = #{pickingId}
+    </select>
+
+    <insert id="insertErpProductionPicking" parameterType="ErpProductionPicking" useGeneratedKeys="true" keyProperty="pickingId">
+        insert into erp_production_picking
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pickingCode != null and pickingCode != ''">picking_code,</if>
+            <if test="moId != null">mo_id,</if>
+            <if test="pickingType != null">picking_type,</if>
+            <if test="warehouseId != null">warehouse_id,</if>
+            <if test="pickingDate != null">picking_date,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="pickingCode != null and pickingCode != ''">#{pickingCode},</if>
+            <if test="moId != null">#{moId},</if>
+            <if test="pickingType != null">#{pickingType},</if>
+            <if test="warehouseId != null">#{warehouseId},</if>
+            <if test="pickingDate != null">#{pickingDate},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateErpProductionPicking" parameterType="ErpProductionPicking">
+        update erp_production_picking
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="pickingCode != null and pickingCode != ''">picking_code = #{pickingCode},</if>
+            <if test="moId != null">mo_id = #{moId},</if>
+            <if test="pickingType != null">picking_type = #{pickingType},</if>
+            <if test="warehouseId != null">warehouse_id = #{warehouseId},</if>
+            <if test="pickingDate != null">picking_date = #{pickingDate},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where picking_id = #{pickingId}
+    </update>
+
+    <delete id="deleteErpProductionPickingByPickingId" parameterType="Long">
+        update erp_production_picking set del_flag = '2' where picking_id = #{pickingId}
+    </delete>
+
+    <delete id="deleteErpProductionPickingByPickingIds" parameterType="String">
+        update erp_production_picking set del_flag = '2' where picking_id in
+        <foreach item="pickingId" collection="array" open="(" separator="," close=")">
+            #{pickingId}
+        </foreach>
+    </delete>
+
+    <delete id="deleteErpProductionPickingLineByPickingId" parameterType="Long">
+        delete from erp_production_picking_line where picking_id = #{pickingId}
+    </delete>
+
+    <delete id="deleteErpProductionPickingLineByPickingIds" parameterType="String">
+        delete from erp_production_picking_line where picking_id in
+        <foreach item="pickingId" collection="array" open="(" separator="," close=")">
+            #{pickingId}
+        </foreach>
+    </delete>
+
+    <insert id="batchErpProductionPickingLine">
+        insert into erp_production_picking_line( line_id, picking_id, material_id, batch_no, qty, create_time) values
+        <foreach item="item" index="index" collection="list" separator=",">
+            ( #{item.lineId}, #{item.pickingId}, #{item.materialId}, #{item.batchNo}, #{item.qty}, #{item.createTime})
+        </foreach>
+    </insert>
+</mapper>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.manufacturing.mapper.ErpProductionExceptionMapper">
+
+    <resultMap type="ErpProductionException" id="ErpProductionExceptionResult">
+        <result property="exceptionId"    column="exception_id"    />
+        <result property="exceptionCode"    column="exception_code"    />
+        <result property="moId"    column="mo_id"    />
+        <result property="exceptionType"    column="exception_type"    />
+        <result property="exceptionDesc"    column="exception_desc"    />
+        <result property="handleMeasure"    column="handle_measure"    />
+        <result property="handleStatus"    column="handle_status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectErpProductionExceptionVo">
+        select exception_id, exception_code, mo_id, exception_type, exception_desc, handle_measure, handle_status, create_by, create_time, update_by, update_time, remark from erp_production_exception
+    </sql>
+
+    <select id="selectErpProductionExceptionList" parameterType="ErpProductionException" resultMap="ErpProductionExceptionResult">
+        <include refid="selectErpProductionExceptionVo"/>
+        <where>
+            <if test="exceptionCode != null  and exceptionCode != ''"> and exception_code like concat('%', #{exceptionCode}, '%')</if>
+            <if test="moId != null "> and mo_id = #{moId}</if>
+            <if test="exceptionType != null  and exceptionType != ''"> and exception_type = #{exceptionType}</if>
+            <if test="exceptionDesc != null  and exceptionDesc != ''"> and exception_desc = #{exceptionDesc}</if>
+            <if test="handleMeasure != null  and handleMeasure != ''"> and handle_measure = #{handleMeasure}</if>
+            <if test="handleStatus != null  and handleStatus != ''"> and handle_status = #{handleStatus}</if>
+        </where>
+    </select>
+
+    <select id="selectErpProductionExceptionByExceptionId" parameterType="Long" resultMap="ErpProductionExceptionResult">
+        <include refid="selectErpProductionExceptionVo"/>
+        where exception_id = #{exceptionId}
+    </select>
+
+    <insert id="insertErpProductionException" parameterType="ErpProductionException" useGeneratedKeys="true" keyProperty="exceptionId">
+        insert into erp_production_exception
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="exceptionCode != null and exceptionCode != ''">exception_code,</if>
+            <if test="moId != null">mo_id,</if>
+            <if test="exceptionType != null">exception_type,</if>
+            <if test="exceptionDesc != null">exception_desc,</if>
+            <if test="handleMeasure != null">handle_measure,</if>
+            <if test="handleStatus != null">handle_status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="exceptionCode != null and exceptionCode != ''">#{exceptionCode},</if>
+            <if test="moId != null">#{moId},</if>
+            <if test="exceptionType != null">#{exceptionType},</if>
+            <if test="exceptionDesc != null">#{exceptionDesc},</if>
+            <if test="handleMeasure != null">#{handleMeasure},</if>
+            <if test="handleStatus != null">#{handleStatus},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateErpProductionException" parameterType="ErpProductionException">
+        update erp_production_exception
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="exceptionCode != null and exceptionCode != ''">exception_code = #{exceptionCode},</if>
+            <if test="moId != null">mo_id = #{moId},</if>
+            <if test="exceptionType != null">exception_type = #{exceptionType},</if>
+            <if test="exceptionDesc != null">exception_desc = #{exceptionDesc},</if>
+            <if test="handleMeasure != null">handle_measure = #{handleMeasure},</if>
+            <if test="handleStatus != null">handle_status = #{handleStatus},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where exception_id = #{exceptionId}
+    </update>
+
+    <delete id="deleteErpProductionExceptionByExceptionId" parameterType="Long">
+        delete from erp_production_exception where exception_id = #{exceptionId}
+    </delete>
+
+    <delete id="deleteErpProductionExceptionByExceptionIds" parameterType="String">
+        delete from erp_production_exception where exception_id in
+        <foreach item="exceptionId" collection="array" open="(" separator="," close=")">
+            #{exceptionId}
+        </foreach>
+    </delete>
+</mapper>

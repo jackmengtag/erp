@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.mdm.mapper.ErpSupplierMapper">
+
+    <resultMap type="ErpSupplier" id="ErpSupplierResult">
+        <result property="supplierId"    column="supplier_id"    />
+        <result property="supplierCode"    column="supplier_code"    />
+        <result property="supplierName"    column="supplier_name"    />
+        <result property="shortName"    column="short_name"    />
+        <result property="supplierLevel"    column="supplier_level"    />
+        <result property="contactPerson"    column="contact_person"    />
+        <result property="contactPhone"    column="contact_phone"    />
+        <result property="address"    column="address"    />
+        <result property="creditDays"    column="credit_days"    />
+        <result property="taxNo"    column="tax_no"    />
+        <result property="bankAccount"    column="bank_account"    />
+        <result property="evaluateScore"    column="evaluate_score"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectErpSupplierVo">
+        select supplier_id, supplier_code, supplier_name, short_name, supplier_level, contact_person, contact_phone, address, credit_days, tax_no, bank_account, evaluate_score, status, create_by, create_time, update_by, update_time, remark from erp_supplier
+    </sql>
+
+    <select id="selectErpSupplierList" parameterType="ErpSupplier" resultMap="ErpSupplierResult">
+        <include refid="selectErpSupplierVo"/>
+        <where>
+            del_flag = '0'
+            <if test="supplierCode != null  and supplierCode != ''"> and supplier_code like concat('%', #{supplierCode}, '%')</if>
+            <if test="supplierName != null  and supplierName != ''"> and supplier_name like concat('%', #{supplierName}, '%')</if>
+            <if test="shortName != null  and shortName != ''"> and short_name = #{shortName}</if>
+            <if test="supplierLevel != null  and supplierLevel != ''"> and supplier_level = #{supplierLevel}</if>
+            <if test="contactPerson != null  and contactPerson != ''"> and contact_person = #{contactPerson}</if>
+            <if test="contactPhone != null  and contactPhone != ''"> and contact_phone = #{contactPhone}</if>
+            <if test="address != null  and address != ''"> and address = #{address}</if>
+            <if test="creditDays != null "> and credit_days = #{creditDays}</if>
+            <if test="taxNo != null  and taxNo != ''"> and tax_no = #{taxNo}</if>
+            <if test="bankAccount != null  and bankAccount != ''"> and bank_account = #{bankAccount}</if>
+            <if test="evaluateScore != null "> and evaluate_score = #{evaluateScore}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+    </select>
+
+    <select id="selectErpSupplierBySupplierId" parameterType="Long" resultMap="ErpSupplierResult">
+        <include refid="selectErpSupplierVo"/>
+        where supplier_id = #{supplierId}
+    </select>
+
+    <insert id="insertErpSupplier" parameterType="ErpSupplier" useGeneratedKeys="true" keyProperty="supplierId">
+        insert into erp_supplier
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="supplierCode != null and supplierCode != ''">supplier_code,</if>
+            <if test="supplierName != null and supplierName != ''">supplier_name,</if>
+            <if test="shortName != null">short_name,</if>
+            <if test="supplierLevel != null">supplier_level,</if>
+            <if test="contactPerson != null">contact_person,</if>
+            <if test="contactPhone != null">contact_phone,</if>
+            <if test="address != null">address,</if>
+            <if test="creditDays != null">credit_days,</if>
+            <if test="taxNo != null">tax_no,</if>
+            <if test="bankAccount != null">bank_account,</if>
+            <if test="evaluateScore != null">evaluate_score,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="supplierCode != null and supplierCode != ''">#{supplierCode},</if>
+            <if test="supplierName != null and supplierName != ''">#{supplierName},</if>
+            <if test="shortName != null">#{shortName},</if>
+            <if test="supplierLevel != null">#{supplierLevel},</if>
+            <if test="contactPerson != null">#{contactPerson},</if>
+            <if test="contactPhone != null">#{contactPhone},</if>
+            <if test="address != null">#{address},</if>
+            <if test="creditDays != null">#{creditDays},</if>
+            <if test="taxNo != null">#{taxNo},</if>
+            <if test="bankAccount != null">#{bankAccount},</if>
+            <if test="evaluateScore != null">#{evaluateScore},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateErpSupplier" parameterType="ErpSupplier">
+        update erp_supplier
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="supplierCode != null and supplierCode != ''">supplier_code = #{supplierCode},</if>
+            <if test="supplierName != null and supplierName != ''">supplier_name = #{supplierName},</if>
+            <if test="shortName != null">short_name = #{shortName},</if>
+            <if test="supplierLevel != null">supplier_level = #{supplierLevel},</if>
+            <if test="contactPerson != null">contact_person = #{contactPerson},</if>
+            <if test="contactPhone != null">contact_phone = #{contactPhone},</if>
+            <if test="address != null">address = #{address},</if>
+            <if test="creditDays != null">credit_days = #{creditDays},</if>
+            <if test="taxNo != null">tax_no = #{taxNo},</if>
+            <if test="bankAccount != null">bank_account = #{bankAccount},</if>
+            <if test="evaluateScore != null">evaluate_score = #{evaluateScore},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where supplier_id = #{supplierId}
+    </update>
+
+    <delete id="deleteErpSupplierBySupplierId" parameterType="Long">
+        update erp_supplier set del_flag = '2' where supplier_id = #{supplierId}
+    </delete>
+
+    <delete id="deleteErpSupplierBySupplierIds" parameterType="String">
+        update erp_supplier set del_flag = '2' where supplier_id in
+        <foreach item="supplierId" collection="array" open="(" separator="," close=")">
+            #{supplierId}
+        </foreach>
+    </delete>
+</mapper>

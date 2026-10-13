@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.bi.mapper.ErpBiMapper">
+
+    <!-- 经营驾驶舱核心指标 -->
+    <select id="selectDashboard" resultType="java.util.Map">
+        select
+            (select count(1) from erp_sales_order where del_flag = '0') as salesOrderCount,
+            (select ifnull(sum(amount_tax), 0) from erp_sales_order where del_flag = '0') as salesAmount,
+            (select count(1) from erp_purchase_order where del_flag = '0') as purchaseOrderCount,
+            (select ifnull(sum(amount_tax), 0) from erp_purchase_order where del_flag = '0') as purchaseAmount,
+            (select ifnull(sum(stock_qty), 0) from erp_inventory) as inventoryQty,
+            (select ifnull(sum(stock_qty * cost_price), 0) from erp_inventory) as inventoryAmount,
+            (select count(1) from erp_production_order where del_flag = '0') as productionOrderCount,
+            (select ifnull(sum(amount - settled_amount), 0) from erp_receivable where del_flag = '0') as arAmount,
+            (select ifnull(sum(amount - settled_amount), 0) from erp_payable where del_flag = '0') as apAmount
+    </select>
+
+    <!-- 订单交付明细 -->
+    <select id="selectOrderDelivery" parameterType="map" resultType="java.util.Map">
+        select
+            o.order_code as orderCode,
+            c.customer_name as customerName,
+            o.order_date as orderDate,
+            o.delivery_date as deliveryDate,
+            o.amount_tax as amountTax,
+            o.status as status,
+            (select ifnull(sum(l.qty), 0) from erp_sales_order_line l where l.order_id = o.order_id) as orderQty,
+            (select ifnull(sum(l.delivered_qty), 0) from erp_sales_order_line l where l.order_id = o.order_id) as deliveredQty
+        from erp_sales_order o
+        left join erp_customer c on c.customer_id = o.customer_id
+        where o.del_flag = '0'
+        <if test="customerId != null"> and o.customer_id = #{customerId}</if>
+        <if test="status != null and status != ''"> and o.status = #{status}</if>
+        order by o.order_date desc
+    </select>
+
+    <!-- 库存库龄分析 -->
+    <select id="selectInventoryAge" parameterType="map" resultType="java.util.Map">
+        select
+            m.material_code as materialCode,
+            m.material_name as materialName,
+            w.warehouse_name as warehouseName,
+            i.batch_no as batchNo,
+            i.stock_qty as stockQty,
+            i.cost_price as costPrice,
+            (i.stock_qty * i.cost_price) as amount,
+            timestampdiff(day, ifnull(i.create_time, now()), now()) as ageDays
+        from erp_inventory i
+        left join erp_material m on m.material_id = i.material_id
+        left join erp_warehouse w on w.warehouse_id = i.warehouse_id
+        where i.stock_qty &gt; 0
+        <if test="warehouseId != null"> and i.warehouse_id = #{warehouseId}</if>
+        order by ageDays desc
+    </select>
+
+    <!-- 供应商准时交付统计 -->
+    <select id="selectSupplierDelivery" parameterType="map" resultType="java.util.Map">
+        select
+            s.supplier_code as supplierCode,
+            s.supplier_name as supplierName,
+            count(1) as poCount,
+            sum(case when p.status in ('3','4') and p.delivery_date &gt;= now() then 1 else 0 end) as onTimeCount,
+            sum(case when p.status not in ('3','4') and p.delivery_date &lt; now() then 1 else 0 end) as delayCount
+        from erp_purchase_order p
+        left join erp_supplier s on s.supplier_id = p.supplier_id
+        where p.del_flag = '0'
+        group by s.supplier_id, s.supplier_code, s.supplier_name
+        order by poCount desc
+    </select>
+
+    <!-- 生产计划达成率 -->
+    <select id="selectProductionAchievement" parameterType="map" resultType="java.util.Map">
+        select
+            mo.mo_code as moCode,
+            m.material_name as productName,
+            mo.plan_qty as planQty,
+            mo.finish_qty as finishQty,
+            case when mo.plan_qty &gt; 0 then round(mo.finish_qty / mo.plan_qty * 100, 2) else 0 end as achieveRate,
+            mo.status as status,
+            mo.plan_end_date as planEndDate
+        from erp_production_order mo
+        left join erp_material m on m.material_id = mo.material_id
+        where mo.del_flag = '0'
+        <if test="status != null and status != ''"> and mo.status = #{status}</if>
+        order by mo.plan_end_date desc
+    </select>
+</mapper>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.finance.mapper.ErpProductionCostMapper">
+
+    <resultMap type="ErpProductionCost" id="ErpProductionCostResult">
+        <result property="costId"    column="cost_id"    />
+        <result property="moId"    column="mo_id"    />
+        <result property="periods"    column="periods"    />
+        <result property="materialCost"    column="material_cost"    />
+        <result property="laborCost"    column="labor_cost"    />
+        <result property="overheadCost"    column="overhead_cost"    />
+        <result property="outsourceCost"    column="outsource_cost"    />
+        <result property="totalCost"    column="total_cost"    />
+        <result property="unitCost"    column="unit_cost"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectErpProductionCostVo">
+        select cost_id, mo_id, periods, material_cost, labor_cost, overhead_cost, outsource_cost, total_cost, unit_cost, create_time from erp_production_cost
+    </sql>
+
+    <select id="selectErpProductionCostList" parameterType="ErpProductionCost" resultMap="ErpProductionCostResult">
+        <include refid="selectErpProductionCostVo"/>
+        <where>
+            <if test="moId != null "> and mo_id = #{moId}</if>
+            <if test="periods != null  and periods != ''"> and periods = #{periods}</if>
+            <if test="materialCost != null "> and material_cost = #{materialCost}</if>
+            <if test="laborCost != null "> and labor_cost = #{laborCost}</if>
+            <if test="overheadCost != null "> and overhead_cost = #{overheadCost}</if>
+            <if test="outsourceCost != null "> and outsource_cost = #{outsourceCost}</if>
+            <if test="totalCost != null "> and total_cost = #{totalCost}</if>
+            <if test="unitCost != null "> and unit_cost = #{unitCost}</if>
+        </where>
+    </select>
+
+    <select id="selectErpProductionCostByCostId" parameterType="Long" resultMap="ErpProductionCostResult">
+        <include refid="selectErpProductionCostVo"/>
+        where cost_id = #{costId}
+    </select>
+
+    <insert id="insertErpProductionCost" parameterType="ErpProductionCost" useGeneratedKeys="true" keyProperty="costId">
+        insert into erp_production_cost
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="moId != null">mo_id,</if>
+            <if test="periods != null">periods,</if>
+            <if test="materialCost != null">material_cost,</if>
+            <if test="laborCost != null">labor_cost,</if>
+            <if test="overheadCost != null">overhead_cost,</if>
+            <if test="outsourceCost != null">outsource_cost,</if>
+            <if test="totalCost != null">total_cost,</if>
+            <if test="unitCost != null">unit_cost,</if>
+            <if test="createTime != null">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="moId != null">#{moId},</if>
+            <if test="periods != null">#{periods},</if>
+            <if test="materialCost != null">#{materialCost},</if>
+            <if test="laborCost != null">#{laborCost},</if>
+            <if test="overheadCost != null">#{overheadCost},</if>
+            <if test="outsourceCost != null">#{outsourceCost},</if>
+            <if test="totalCost != null">#{totalCost},</if>
+            <if test="unitCost != null">#{unitCost},</if>
+            <if test="createTime != null">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateErpProductionCost" parameterType="ErpProductionCost">
+        update erp_production_cost
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="moId != null">mo_id = #{moId},</if>
+            <if test="periods != null">periods = #{periods},</if>
+            <if test="materialCost != null">material_cost = #{materialCost},</if>
+            <if test="laborCost != null">labor_cost = #{laborCost},</if>
+            <if test="overheadCost != null">overhead_cost = #{overheadCost},</if>
+            <if test="outsourceCost != null">outsource_cost = #{outsourceCost},</if>
+            <if test="totalCost != null">total_cost = #{totalCost},</if>
+            <if test="unitCost != null">unit_cost = #{unitCost},</if>
+        </trim>
+        where cost_id = #{costId}
+    </update>
+
+    <delete id="deleteErpProductionCostByCostId" parameterType="Long">
+        delete from erp_production_cost where cost_id = #{costId}
+    </delete>
+
+    <delete id="deleteErpProductionCostByCostIds" parameterType="String">
+        delete from erp_production_cost where cost_id in
+        <foreach item="costId" collection="array" open="(" separator="," close=")">
+            #{costId}
+        </foreach>
+    </delete>
+</mapper>

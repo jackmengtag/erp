@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.inventory.mapper.ErpStocktakeMapper">
+
+    <resultMap type="ErpStocktake" id="ErpStocktakeResult">
+        <result property="stocktakeId"    column="stocktake_id"    />
+        <result property="stocktakeCode"    column="stocktake_code"    />
+        <result property="warehouseId"    column="warehouse_id"    />
+        <result property="stocktakeType"    column="stocktake_type"    />
+        <result property="stocktakeDate"    column="stocktake_date"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <resultMap id="ErpStocktakeErpStocktakeLineResult" type="ErpStocktake" extends="ErpStocktakeResult">
+        <collection property="erpStocktakeLineList" notNullColumn="sub_line_id" javaType="java.util.List" resultMap="ErpStocktakeLineResult" />
+    </resultMap>
+
+    <resultMap type="ErpStocktakeLine" id="ErpStocktakeLineResult">
+        <result property="lineId"    column="sub_line_id"    />
+        <result property="stocktakeId"    column="sub_stocktake_id"    />
+        <result property="materialId"    column="sub_material_id"    />
+        <result property="batchNo"    column="sub_batch_no"    />
+        <result property="bookQty"    column="sub_book_qty"    />
+        <result property="actualQty"    column="sub_actual_qty"    />
+        <result property="diffQty"    column="sub_diff_qty"    />
+        <result property="createTime"    column="sub_create_time"    />
+    </resultMap>
+
+    <sql id="selectErpStocktakeVo">
+        select stocktake_id, stocktake_code, warehouse_id, stocktake_type, stocktake_date, status, create_by, create_time, update_by, update_time, remark from erp_stocktake
+    </sql>
+
+    <select id="selectErpStocktakeList" parameterType="ErpStocktake" resultMap="ErpStocktakeResult">
+        <include refid="selectErpStocktakeVo"/>
+        <where>
+            del_flag = '0'
+            <if test="stocktakeCode != null  and stocktakeCode != ''"> and stocktake_code like concat('%', #{stocktakeCode}, '%')</if>
+            <if test="warehouseId != null "> and warehouse_id = #{warehouseId}</if>
+            <if test="stocktakeType != null  and stocktakeType != ''"> and stocktake_type = #{stocktakeType}</if>
+            <if test="stocktakeDate != null "> and stocktake_date = #{stocktakeDate}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+    </select>
+
+    <select id="selectErpStocktakeByStocktakeId" parameterType="Long" resultMap="ErpStocktakeErpStocktakeLineResult">
+        select a.stocktake_id, a.stocktake_code, a.warehouse_id, a.stocktake_type, a.stocktake_date, a.status, a.create_by, a.create_time, a.update_by, a.update_time, a.remark,
+               b.line_id as sub_line_id, b.stocktake_id as sub_stocktake_id, b.material_id as sub_material_id, b.batch_no as sub_batch_no, b.book_qty as sub_book_qty, b.actual_qty as sub_actual_qty, b.diff_qty as sub_diff_qty, b.create_time as sub_create_time
+        from erp_stocktake a
+        left join erp_stocktake_line b on b.stocktake_id = a.stocktake_id
+        where a.stocktake_id = #{stocktakeId}
+    </select>
+
+    <insert id="insertErpStocktake" parameterType="ErpStocktake" useGeneratedKeys="true" keyProperty="stocktakeId">
+        insert into erp_stocktake
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="stocktakeCode != null and stocktakeCode != ''">stocktake_code,</if>
+            <if test="warehouseId != null">warehouse_id,</if>
+            <if test="stocktakeType != null">stocktake_type,</if>
+            <if test="stocktakeDate != null">stocktake_date,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="stocktakeCode != null and stocktakeCode != ''">#{stocktakeCode},</if>
+            <if test="warehouseId != null">#{warehouseId},</if>
+            <if test="stocktakeType != null">#{stocktakeType},</if>
+            <if test="stocktakeDate != null">#{stocktakeDate},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateErpStocktake" parameterType="ErpStocktake">
+        update erp_stocktake
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="stocktakeCode != null and stocktakeCode != ''">stocktake_code = #{stocktakeCode},</if>
+            <if test="warehouseId != null">warehouse_id = #{warehouseId},</if>
+            <if test="stocktakeType != null">stocktake_type = #{stocktakeType},</if>
+            <if test="stocktakeDate != null">stocktake_date = #{stocktakeDate},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where stocktake_id = #{stocktakeId}
+    </update>
+
+    <delete id="deleteErpStocktakeByStocktakeId" parameterType="Long">
+        update erp_stocktake set del_flag = '2' where stocktake_id = #{stocktakeId}
+    </delete>
+
+    <delete id="deleteErpStocktakeByStocktakeIds" parameterType="String">
+        update erp_stocktake set del_flag = '2' where stocktake_id in
+        <foreach item="stocktakeId" collection="array" open="(" separator="," close=")">
+            #{stocktakeId}
+        </foreach>
+    </delete>
+
+    <delete id="deleteErpStocktakeLineByStocktakeId" parameterType="Long">
+        delete from erp_stocktake_line where stocktake_id = #{stocktakeId}
+    </delete>
+
+    <delete id="deleteErpStocktakeLineByStocktakeIds" parameterType="String">
+        delete from erp_stocktake_line where stocktake_id in
+        <foreach item="stocktakeId" collection="array" open="(" separator="," close=")">
+            #{stocktakeId}
+        </foreach>
+    </delete>
+
+    <insert id="batchErpStocktakeLine">
+        insert into erp_stocktake_line( line_id, stocktake_id, material_id, batch_no, book_qty, actual_qty, diff_qty, create_time) values
+        <foreach item="item" index="index" collection="list" separator=",">
+            ( #{item.lineId}, #{item.stocktakeId}, #{item.materialId}, #{item.batchNo}, #{item.bookQty}, #{item.actualQty}, #{item.diffQty}, #{item.createTime})
+        </foreach>
+    </insert>
+</mapper>

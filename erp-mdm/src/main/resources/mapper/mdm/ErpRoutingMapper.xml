@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.mdm.mapper.ErpRoutingMapper">
+
+    <resultMap type="ErpRouting" id="ErpRoutingResult">
+        <result property="routingId"    column="routing_id"    />
+        <result property="routingCode"    column="routing_code"    />
+        <result property="routingName"    column="routing_name"    />
+        <result property="materialId"    column="material_id"    />
+        <result property="version"    column="version"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <resultMap id="ErpRoutingErpRoutingOperationResult" type="ErpRouting" extends="ErpRoutingResult">
+        <collection property="erpRoutingOperationList" notNullColumn="sub_operation_id" javaType="java.util.List" resultMap="ErpRoutingOperationResult" />
+    </resultMap>
+
+    <resultMap type="ErpRoutingOperation" id="ErpRoutingOperationResult">
+        <result property="operationId"    column="sub_operation_id"    />
+        <result property="routingId"    column="sub_routing_id"    />
+        <result property="seqNo"    column="sub_seq_no"    />
+        <result property="operationCode"    column="sub_operation_code"    />
+        <result property="operationName"    column="sub_operation_name"    />
+        <result property="wcId"    column="sub_wc_id"    />
+        <result property="standardHours"    column="sub_standard_hours"    />
+        <result property="yieldRate"    column="sub_yield_rate"    />
+        <result property="inspectFlag"    column="sub_inspect_flag"    />
+        <result property="outsourceFlag"    column="sub_outsource_flag"    />
+        <result property="createTime"    column="sub_create_time"    />
+    </resultMap>
+
+    <sql id="selectErpRoutingVo">
+        select routing_id, routing_code, routing_name, material_id, version, status, create_by, create_time, update_by, update_time, remark from erp_routing
+    </sql>
+
+    <select id="selectErpRoutingList" parameterType="ErpRouting" resultMap="ErpRoutingResult">
+        <include refid="selectErpRoutingVo"/>
+        <where>
+            del_flag = '0'
+            <if test="routingCode != null  and routingCode != ''"> and routing_code like concat('%', #{routingCode}, '%')</if>
+            <if test="routingName != null  and routingName != ''"> and routing_name like concat('%', #{routingName}, '%')</if>
+            <if test="materialId != null "> and material_id = #{materialId}</if>
+            <if test="version != null  and version != ''"> and version = #{version}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+    </select>
+
+    <select id="selectErpRoutingByRoutingId" parameterType="Long" resultMap="ErpRoutingErpRoutingOperationResult">
+        select a.routing_id, a.routing_code, a.routing_name, a.material_id, a.version, a.status, a.create_by, a.create_time, a.update_by, a.update_time, a.remark,
+               b.operation_id as sub_operation_id, b.routing_id as sub_routing_id, b.seq_no as sub_seq_no, b.operation_code as sub_operation_code, b.operation_name as sub_operation_name, b.wc_id as sub_wc_id, b.standard_hours as sub_standard_hours, b.yield_rate as sub_yield_rate, b.inspect_flag as sub_inspect_flag, b.outsource_flag as sub_outsource_flag, b.create_time as sub_create_time
+        from erp_routing a
+        left join erp_routing_operation b on b.routing_id = a.routing_id
+        where a.routing_id = #{routingId}
+    </select>
+
+    <insert id="insertErpRouting" parameterType="ErpRouting" useGeneratedKeys="true" keyProperty="routingId">
+        insert into erp_routing
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="routingCode != null and routingCode != ''">routing_code,</if>
+            <if test="routingName != null and routingName != ''">routing_name,</if>
+            <if test="materialId != null">material_id,</if>
+            <if test="version != null">version,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="routingCode != null and routingCode != ''">#{routingCode},</if>
+            <if test="routingName != null and routingName != ''">#{routingName},</if>
+            <if test="materialId != null">#{materialId},</if>
+            <if test="version != null">#{version},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateErpRouting" parameterType="ErpRouting">
+        update erp_routing
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="routingCode != null and routingCode != ''">routing_code = #{routingCode},</if>
+            <if test="routingName != null and routingName != ''">routing_name = #{routingName},</if>
+            <if test="materialId != null">material_id = #{materialId},</if>
+            <if test="version != null">version = #{version},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where routing_id = #{routingId}
+    </update>
+
+    <delete id="deleteErpRoutingByRoutingId" parameterType="Long">
+        update erp_routing set del_flag = '2' where routing_id = #{routingId}
+    </delete>
+
+    <delete id="deleteErpRoutingByRoutingIds" parameterType="String">
+        update erp_routing set del_flag = '2' where routing_id in
+        <foreach item="routingId" collection="array" open="(" separator="," close=")">
+            #{routingId}
+        </foreach>
+    </delete>
+
+    <delete id="deleteErpRoutingOperationByRoutingId" parameterType="Long">
+        delete from erp_routing_operation where routing_id = #{routingId}
+    </delete>
+
+    <delete id="deleteErpRoutingOperationByRoutingIds" parameterType="String">
+        delete from erp_routing_operation where routing_id in
+        <foreach item="routingId" collection="array" open="(" separator="," close=")">
+            #{routingId}
+        </foreach>
+    </delete>
+
+    <insert id="batchErpRoutingOperation">
+        insert into erp_routing_operation( operation_id, routing_id, seq_no, operation_code, operation_name, wc_id, standard_hours, yield_rate, inspect_flag, outsource_flag, create_time) values
+        <foreach item="item" index="index" collection="list" separator=",">
+            ( #{item.operationId}, #{item.routingId}, #{item.seqNo}, #{item.operationCode}, #{item.operationName}, #{item.wcId}, #{item.standardHours}, #{item.yieldRate}, #{item.inspectFlag}, #{item.outsourceFlag}, #{item.createTime})
+        </foreach>
+    </insert>
+</mapper>

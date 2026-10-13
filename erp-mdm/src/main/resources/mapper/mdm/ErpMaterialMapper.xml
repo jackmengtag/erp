@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.mdm.mapper.ErpMaterialMapper">
+
+    <resultMap type="ErpMaterial" id="ErpMaterialResult">
+        <result property="materialId"    column="material_id"    />
+        <result property="materialCode"    column="material_code"    />
+        <result property="materialName"    column="material_name"    />
+        <result property="specification"    column="specification"    />
+        <result property="categoryId"    column="category_id"    />
+        <result property="uomId"    column="uom_id"    />
+        <result property="materialType"    column="material_type"    />
+        <result property="batchManage"    column="batch_manage"    />
+        <result property="serialManage"    column="serial_manage"    />
+        <result property="shelfLifeDays"    column="shelf_life_days"    />
+        <result property="purchaseFlag"    column="purchase_flag"    />
+        <result property="produceFlag"    column="produce_flag"    />
+        <result property="saleFlag"    column="sale_flag"    />
+        <result property="leadTimeDays"    column="lead_time_days"    />
+        <result property="produceLeadTime"    column="produce_lead_time"    />
+        <result property="safeStock"    column="safe_stock"    />
+        <result property="taxRate"    column="tax_rate"    />
+        <result property="costPrice"    column="cost_price"    />
+        <result property="salePrice"    column="sale_price"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectErpMaterialVo">
+        select material_id, material_code, material_name, specification, category_id, uom_id, material_type, batch_manage, serial_manage, shelf_life_days, purchase_flag, produce_flag, sale_flag, lead_time_days, produce_lead_time, safe_stock, tax_rate, cost_price, sale_price, status, create_by, create_time, update_by, update_time, remark from erp_material
+    </sql>
+
+    <select id="selectErpMaterialList" parameterType="ErpMaterial" resultMap="ErpMaterialResult">
+        <include refid="selectErpMaterialVo"/>
+        <where>
+            del_flag = '0'
+            <if test="materialCode != null  and materialCode != ''"> and material_code like concat('%', #{materialCode}, '%')</if>
+            <if test="materialName != null  and materialName != ''"> and material_name like concat('%', #{materialName}, '%')</if>
+            <if test="specification != null  and specification != ''"> and specification = #{specification}</if>
+            <if test="categoryId != null "> and category_id = #{categoryId}</if>
+            <if test="uomId != null "> and uom_id = #{uomId}</if>
+            <if test="materialType != null  and materialType != ''"> and material_type = #{materialType}</if>
+            <if test="batchManage != null  and batchManage != ''"> and batch_manage = #{batchManage}</if>
+            <if test="serialManage != null  and serialManage != ''"> and serial_manage = #{serialManage}</if>
+            <if test="shelfLifeDays != null "> and shelf_life_days = #{shelfLifeDays}</if>
+            <if test="purchaseFlag != null  and purchaseFlag != ''"> and purchase_flag = #{purchaseFlag}</if>
+            <if test="produceFlag != null  and produceFlag != ''"> and produce_flag = #{produceFlag}</if>
+            <if test="saleFlag != null  and saleFlag != ''"> and sale_flag = #{saleFlag}</if>
+            <if test="leadTimeDays != null "> and lead_time_days = #{leadTimeDays}</if>
+            <if test="produceLeadTime != null "> and produce_lead_time = #{produceLeadTime}</if>
+            <if test="safeStock != null "> and safe_stock = #{safeStock}</if>
+            <if test="taxRate != null "> and tax_rate = #{taxRate}</if>
+            <if test="costPrice != null "> and cost_price = #{costPrice}</if>
+            <if test="salePrice != null "> and sale_price = #{salePrice}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+    </select>
+
+    <select id="selectErpMaterialByMaterialId" parameterType="Long" resultMap="ErpMaterialResult">
+        <include refid="selectErpMaterialVo"/>
+        where material_id = #{materialId}
+    </select>
+
+    <insert id="insertErpMaterial" parameterType="ErpMaterial" useGeneratedKeys="true" keyProperty="materialId">
+        insert into erp_material
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="materialCode != null and materialCode != ''">material_code,</if>
+            <if test="materialName != null and materialName != ''">material_name,</if>
+            <if test="specification != null">specification,</if>
+            <if test="categoryId != null">category_id,</if>
+            <if test="uomId != null">uom_id,</if>
+            <if test="materialType != null">material_type,</if>
+            <if test="batchManage != null">batch_manage,</if>
+            <if test="serialManage != null">serial_manage,</if>
+            <if test="shelfLifeDays != null">shelf_life_days,</if>
+            <if test="purchaseFlag != null">purchase_flag,</if>
+            <if test="produceFlag != null">produce_flag,</if>
+            <if test="saleFlag != null">sale_flag,</if>
+            <if test="leadTimeDays != null">lead_time_days,</if>
+            <if test="produceLeadTime != null">produce_lead_time,</if>
+            <if test="safeStock != null">safe_stock,</if>
+            <if test="taxRate != null">tax_rate,</if>
+            <if test="costPrice != null">cost_price,</if>
+            <if test="salePrice != null">sale_price,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="materialCode != null and materialCode != ''">#{materialCode},</if>
+            <if test="materialName != null and materialName != ''">#{materialName},</if>
+            <if test="specification != null">#{specification},</if>
+            <if test="categoryId != null">#{categoryId},</if>
+            <if test="uomId != null">#{uomId},</if>
+            <if test="materialType != null">#{materialType},</if>
+            <if test="batchManage != null">#{batchManage},</if>
+            <if test="serialManage != null">#{serialManage},</if>
+            <if test="shelfLifeDays != null">#{shelfLifeDays},</if>
+            <if test="purchaseFlag != null">#{purchaseFlag},</if>
+            <if test="produceFlag != null">#{produceFlag},</if>
+            <if test="saleFlag != null">#{saleFlag},</if>
+            <if test="leadTimeDays != null">#{leadTimeDays},</if>
+            <if test="produceLeadTime != null">#{produceLeadTime},</if>
+            <if test="safeStock != null">#{safeStock},</if>
+            <if test="taxRate != null">#{taxRate},</if>
+            <if test="costPrice != null">#{costPrice},</if>
+            <if test="salePrice != null">#{salePrice},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateErpMaterial" parameterType="ErpMaterial">
+        update erp_material
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="materialCode != null and materialCode != ''">material_code = #{materialCode},</if>
+            <if test="materialName != null and materialName != ''">material_name = #{materialName},</if>
+            <if test="specification != null">specification = #{specification},</if>
+            <if test="categoryId != null">category_id = #{categoryId},</if>
+            <if test="uomId != null">uom_id = #{uomId},</if>
+            <if test="materialType != null">material_type = #{materialType},</if>
+            <if test="batchManage != null">batch_manage = #{batchManage},</if>
+            <if test="serialManage != null">serial_manage = #{serialManage},</if>
+            <if test="shelfLifeDays != null">shelf_life_days = #{shelfLifeDays},</if>
+            <if test="purchaseFlag != null">purchase_flag = #{purchaseFlag},</if>
+            <if test="produceFlag != null">produce_flag = #{produceFlag},</if>
+            <if test="saleFlag != null">sale_flag = #{saleFlag},</if>
+            <if test="leadTimeDays != null">lead_time_days = #{leadTimeDays},</if>
+            <if test="produceLeadTime != null">produce_lead_time = #{produceLeadTime},</if>
+            <if test="safeStock != null">safe_stock = #{safeStock},</if>
+            <if test="taxRate != null">tax_rate = #{taxRate},</if>
+            <if test="costPrice != null">cost_price = #{costPrice},</if>
+            <if test="salePrice != null">sale_price = #{salePrice},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where material_id = #{materialId}
+    </update>
+
+    <delete id="deleteErpMaterialByMaterialId" parameterType="Long">
+        update erp_material set del_flag = '2' where material_id = #{materialId}
+    </delete>
+
+    <delete id="deleteErpMaterialByMaterialIds" parameterType="String">
+        update erp_material set del_flag = '2' where material_id in
+        <foreach item="materialId" collection="array" open="(" separator="," close=")">
+            #{materialId}
+        </foreach>
+    </delete>
+</mapper>

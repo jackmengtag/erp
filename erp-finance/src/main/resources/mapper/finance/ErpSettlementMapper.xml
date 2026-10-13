@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.finance.mapper.ErpSettlementMapper">
+
+    <resultMap type="ErpSettlement" id="ErpSettlementResult">
+        <result property="settleId"    column="settle_id"    />
+        <result property="settleType"    column="settle_type"    />
+        <result property="sourceId"    column="source_id"    />
+        <result property="targetId"    column="target_id"    />
+        <result property="amount"    column="amount"    />
+        <result property="settleDate"    column="settle_date"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectErpSettlementVo">
+        select settle_id, settle_type, source_id, target_id, amount, settle_date, create_by, create_time from erp_settlement
+    </sql>
+
+    <select id="selectErpSettlementList" parameterType="ErpSettlement" resultMap="ErpSettlementResult">
+        <include refid="selectErpSettlementVo"/>
+        <where>
+            <if test="settleType != null  and settleType != ''"> and settle_type = #{settleType}</if>
+            <if test="sourceId != null "> and source_id = #{sourceId}</if>
+            <if test="targetId != null "> and target_id = #{targetId}</if>
+            <if test="amount != null "> and amount = #{amount}</if>
+            <if test="settleDate != null "> and settle_date = #{settleDate}</if>
+        </where>
+    </select>
+
+    <select id="selectErpSettlementBySettleId" parameterType="Long" resultMap="ErpSettlementResult">
+        <include refid="selectErpSettlementVo"/>
+        where settle_id = #{settleId}
+    </select>
+
+    <insert id="insertErpSettlement" parameterType="ErpSettlement" useGeneratedKeys="true" keyProperty="settleId">
+        insert into erp_settlement
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="settleType != null">settle_type,</if>
+            <if test="sourceId != null">source_id,</if>
+            <if test="targetId != null">target_id,</if>
+            <if test="amount != null">amount,</if>
+            <if test="settleDate != null">settle_date,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="settleType != null">#{settleType},</if>
+            <if test="sourceId != null">#{sourceId},</if>
+            <if test="targetId != null">#{targetId},</if>
+            <if test="amount != null">#{amount},</if>
+            <if test="settleDate != null">#{settleDate},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateErpSettlement" parameterType="ErpSettlement">
+        update erp_settlement
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="settleType != null">settle_type = #{settleType},</if>
+            <if test="sourceId != null">source_id = #{sourceId},</if>
+            <if test="targetId != null">target_id = #{targetId},</if>
+            <if test="amount != null">amount = #{amount},</if>
+            <if test="settleDate != null">settle_date = #{settleDate},</if>
+        </trim>
+        where settle_id = #{settleId}
+    </update>
+
+    <delete id="deleteErpSettlementBySettleId" parameterType="Long">
+        delete from erp_settlement where settle_id = #{settleId}
+    </delete>
+
+    <delete id="deleteErpSettlementBySettleIds" parameterType="String">
+        delete from erp_settlement where settle_id in
+        <foreach item="settleId" collection="array" open="(" separator="," close=")">
+            #{settleId}
+        </foreach>
+    </delete>
+</mapper>

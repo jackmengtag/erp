@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.manufacturing.mapper.ErpProductionCompletionMapper">
+
+    <resultMap type="ErpProductionCompletion" id="ErpProductionCompletionResult">
+        <result property="completionId"    column="completion_id"    />
+        <result property="completionCode"    column="completion_code"    />
+        <result property="moId"    column="mo_id"    />
+        <result property="warehouseId"    column="warehouse_id"    />
+        <result property="batchNo"    column="batch_no"    />
+        <result property="qty"    column="qty"    />
+        <result property="completionDate"    column="completion_date"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectErpProductionCompletionVo">
+        select completion_id, completion_code, mo_id, warehouse_id, batch_no, qty, completion_date, status, create_by, create_time, update_by, update_time, remark from erp_production_completion
+    </sql>
+
+    <select id="selectErpProductionCompletionList" parameterType="ErpProductionCompletion" resultMap="ErpProductionCompletionResult">
+        <include refid="selectErpProductionCompletionVo"/>
+        <where>
+            <if test="completionCode != null  and completionCode != ''"> and completion_code like concat('%', #{completionCode}, '%')</if>
+            <if test="moId != null "> and mo_id = #{moId}</if>
+            <if test="warehouseId != null "> and warehouse_id = #{warehouseId}</if>
+            <if test="batchNo != null  and batchNo != ''"> and batch_no = #{batchNo}</if>
+            <if test="qty != null "> and qty = #{qty}</if>
+            <if test="completionDate != null "> and completion_date = #{completionDate}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+    </select>
+
+    <select id="selectErpProductionCompletionByCompletionId" parameterType="Long" resultMap="ErpProductionCompletionResult">
+        <include refid="selectErpProductionCompletionVo"/>
+        where completion_id = #{completionId}
+    </select>
+
+    <insert id="insertErpProductionCompletion" parameterType="ErpProductionCompletion" useGeneratedKeys="true" keyProperty="completionId">
+        insert into erp_production_completion
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="completionCode != null and completionCode != ''">completion_code,</if>
+            <if test="moId != null">mo_id,</if>
+            <if test="warehouseId != null">warehouse_id,</if>
+            <if test="batchNo != null">batch_no,</if>
+            <if test="qty != null">qty,</if>
+            <if test="completionDate != null">completion_date,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="completionCode != null and completionCode != ''">#{completionCode},</if>
+            <if test="moId != null">#{moId},</if>
+            <if test="warehouseId != null">#{warehouseId},</if>
+            <if test="batchNo != null">#{batchNo},</if>
+            <if test="qty != null">#{qty},</if>
+            <if test="completionDate != null">#{completionDate},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateErpProductionCompletion" parameterType="ErpProductionCompletion">
+        update erp_production_completion
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="completionCode != null and completionCode != ''">completion_code = #{completionCode},</if>
+            <if test="moId != null">mo_id = #{moId},</if>
+            <if test="warehouseId != null">warehouse_id = #{warehouseId},</if>
+            <if test="batchNo != null">batch_no = #{batchNo},</if>
+            <if test="qty != null">qty = #{qty},</if>
+            <if test="completionDate != null">completion_date = #{completionDate},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where completion_id = #{completionId}
+    </update>
+
+    <delete id="deleteErpProductionCompletionByCompletionId" parameterType="Long">
+        delete from erp_production_completion where completion_id = #{completionId}
+    </delete>
+
+    <delete id="deleteErpProductionCompletionByCompletionIds" parameterType="String">
+        delete from erp_production_completion where completion_id in
+        <foreach item="completionId" collection="array" open="(" separator="," close=")">
+            #{completionId}
+        </foreach>
+    </delete>
+</mapper>

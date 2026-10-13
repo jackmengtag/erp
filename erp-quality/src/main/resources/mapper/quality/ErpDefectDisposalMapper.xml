@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.quality.mapper.ErpDefectDisposalMapper">
+
+    <resultMap type="ErpDefectDisposal" id="ErpDefectDisposalResult">
+        <result property="disposalId"    column="disposal_id"    />
+        <result property="disposalCode"    column="disposal_code"    />
+        <result property="inspectId"    column="inspect_id"    />
+        <result property="materialId"    column="material_id"    />
+        <result property="batchNo"    column="batch_no"    />
+        <result property="defectQty"    column="defect_qty"    />
+        <result property="disposalType"    column="disposal_type"    />
+        <result property="reason"    column="reason"    />
+        <result property="handleStatus"    column="handle_status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectErpDefectDisposalVo">
+        select disposal_id, disposal_code, inspect_id, material_id, batch_no, defect_qty, disposal_type, reason, handle_status, create_by, create_time, update_by, update_time, remark from erp_defect_disposal
+    </sql>
+
+    <select id="selectErpDefectDisposalList" parameterType="ErpDefectDisposal" resultMap="ErpDefectDisposalResult">
+        <include refid="selectErpDefectDisposalVo"/>
+        <where>
+            <if test="disposalCode != null  and disposalCode != ''"> and disposal_code like concat('%', #{disposalCode}, '%')</if>
+            <if test="inspectId != null "> and inspect_id = #{inspectId}</if>
+            <if test="materialId != null "> and material_id = #{materialId}</if>
+            <if test="batchNo != null  and batchNo != ''"> and batch_no like concat('%', #{batchNo}, '%')</if>
+            <if test="disposalType != null  and disposalType != ''"> and disposal_type = #{disposalType}</if>
+            <if test="handleStatus != null  and handleStatus != ''"> and handle_status = #{handleStatus}</if>
+        </where>
+    </select>
+
+    <select id="selectErpDefectDisposalByDisposalId" parameterType="Long" resultMap="ErpDefectDisposalResult">
+        <include refid="selectErpDefectDisposalVo"/>
+        where disposal_id = #{disposalId}
+    </select>
+
+    <insert id="insertErpDefectDisposal" parameterType="ErpDefectDisposal" useGeneratedKeys="true" keyProperty="disposalId">
+        insert into erp_defect_disposal
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="disposalCode != null and disposalCode != ''">disposal_code,</if>
+            <if test="inspectId != null">inspect_id,</if>
+            <if test="materialId != null">material_id,</if>
+            <if test="batchNo != null">batch_no,</if>
+            <if test="defectQty != null">defect_qty,</if>
+            <if test="disposalType != null">disposal_type,</if>
+            <if test="reason != null">reason,</if>
+            <if test="handleStatus != null">handle_status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="disposalCode != null and disposalCode != ''">#{disposalCode},</if>
+            <if test="inspectId != null">#{inspectId},</if>
+            <if test="materialId != null">#{materialId},</if>
+            <if test="batchNo != null">#{batchNo},</if>
+            <if test="defectQty != null">#{defectQty},</if>
+            <if test="disposalType != null">#{disposalType},</if>
+            <if test="reason != null">#{reason},</if>
+            <if test="handleStatus != null">#{handleStatus},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateErpDefectDisposal" parameterType="ErpDefectDisposal">
+        update erp_defect_disposal
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="disposalCode != null and disposalCode != ''">disposal_code = #{disposalCode},</if>
+            <if test="inspectId != null">inspect_id = #{inspectId},</if>
+            <if test="materialId != null">material_id = #{materialId},</if>
+            <if test="batchNo != null">batch_no = #{batchNo},</if>
+            <if test="defectQty != null">defect_qty = #{defectQty},</if>
+            <if test="disposalType != null">disposal_type = #{disposalType},</if>
+            <if test="reason != null">reason = #{reason},</if>
+            <if test="handleStatus != null">handle_status = #{handleStatus},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where disposal_id = #{disposalId}
+    </update>
+
+    <delete id="deleteErpDefectDisposalByDisposalId" parameterType="Long">
+        delete from erp_defect_disposal where disposal_id = #{disposalId}
+    </delete>
+
+    <delete id="deleteErpDefectDisposalByDisposalIds" parameterType="String">
+        delete from erp_defect_disposal where disposal_id in
+        <foreach item="disposalId" collection="array" open="(" separator="," close=")">
+            #{disposalId}
+        </foreach>
+    </delete>
+</mapper>

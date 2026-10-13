@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.plan.mapper.ErpMrpResultMapper">
+
+    <resultMap type="ErpMrpResult" id="ErpMrpResultResult">
+        <result property="resultId"    column="result_id"    />
+        <result property="runId"    column="run_id"    />
+        <result property="materialId"    column="material_id"    />
+        <result property="grossRequirement"    column="gross_requirement"    />
+        <result property="availableQty"    column="available_qty"    />
+        <result property="onHandSupply"    column="on_hand_supply"    />
+        <result property="safeStock"    column="safe_stock"    />
+        <result property="netRequirement"    column="net_requirement"    />
+        <result property="suggestType"    column="suggest_type"    />
+        <result property="suggestQty"    column="suggest_qty"    />
+        <result property="needDate"    column="need_date"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectErpMrpResultVo">
+        select result_id, run_id, material_id, gross_requirement, available_qty, on_hand_supply, safe_stock, net_requirement, suggest_type, suggest_qty, need_date, create_time from erp_mrp_result
+    </sql>
+
+    <select id="selectErpMrpResultList" parameterType="ErpMrpResult" resultMap="ErpMrpResultResult">
+        <include refid="selectErpMrpResultVo"/>
+        <where>
+            <if test="runId != null "> and run_id = #{runId}</if>
+            <if test="materialId != null "> and material_id = #{materialId}</if>
+            <if test="grossRequirement != null "> and gross_requirement = #{grossRequirement}</if>
+            <if test="availableQty != null "> and available_qty = #{availableQty}</if>
+            <if test="onHandSupply != null "> and on_hand_supply = #{onHandSupply}</if>
+            <if test="safeStock != null "> and safe_stock = #{safeStock}</if>
+            <if test="netRequirement != null "> and net_requirement = #{netRequirement}</if>
+            <if test="suggestType != null  and suggestType != ''"> and suggest_type = #{suggestType}</if>
+            <if test="suggestQty != null "> and suggest_qty = #{suggestQty}</if>
+            <if test="needDate != null "> and need_date = #{needDate}</if>
+        </where>
+    </select>
+
+    <select id="selectErpMrpResultByResultId" parameterType="Long" resultMap="ErpMrpResultResult">
+        <include refid="selectErpMrpResultVo"/>
+        where result_id = #{resultId}
+    </select>
+
+    <insert id="insertErpMrpResult" parameterType="ErpMrpResult" useGeneratedKeys="true" keyProperty="resultId">
+        insert into erp_mrp_result
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="runId != null">run_id,</if>
+            <if test="materialId != null">material_id,</if>
+            <if test="grossRequirement != null">gross_requirement,</if>
+            <if test="availableQty != null">available_qty,</if>
+            <if test="onHandSupply != null">on_hand_supply,</if>
+            <if test="safeStock != null">safe_stock,</if>
+            <if test="netRequirement != null">net_requirement,</if>
+            <if test="suggestType != null">suggest_type,</if>
+            <if test="suggestQty != null">suggest_qty,</if>
+            <if test="needDate != null">need_date,</if>
+            <if test="createTime != null">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="runId != null">#{runId},</if>
+            <if test="materialId != null">#{materialId},</if>
+            <if test="grossRequirement != null">#{grossRequirement},</if>
+            <if test="availableQty != null">#{availableQty},</if>
+            <if test="onHandSupply != null">#{onHandSupply},</if>
+            <if test="safeStock != null">#{safeStock},</if>
+            <if test="netRequirement != null">#{netRequirement},</if>
+            <if test="suggestType != null">#{suggestType},</if>
+            <if test="suggestQty != null">#{suggestQty},</if>
+            <if test="needDate != null">#{needDate},</if>
+            <if test="createTime != null">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateErpMrpResult" parameterType="ErpMrpResult">
+        update erp_mrp_result
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="runId != null">run_id = #{runId},</if>
+            <if test="materialId != null">material_id = #{materialId},</if>
+            <if test="grossRequirement != null">gross_requirement = #{grossRequirement},</if>
+            <if test="availableQty != null">available_qty = #{availableQty},</if>
+            <if test="onHandSupply != null">on_hand_supply = #{onHandSupply},</if>
+            <if test="safeStock != null">safe_stock = #{safeStock},</if>
+            <if test="netRequirement != null">net_requirement = #{netRequirement},</if>
+            <if test="suggestType != null">suggest_type = #{suggestType},</if>
+            <if test="suggestQty != null">suggest_qty = #{suggestQty},</if>
+            <if test="needDate != null">need_date = #{needDate},</if>
+        </trim>
+        where result_id = #{resultId}
+    </update>
+
+    <delete id="deleteErpMrpResultByResultId" parameterType="Long">
+        delete from erp_mrp_result where result_id = #{resultId}
+    </delete>
+
+    <delete id="deleteErpMrpResultByResultIds" parameterType="String">
+        delete from erp_mrp_result where result_id in
+        <foreach item="resultId" collection="array" open="(" separator="," close=")">
+            #{resultId}
+        </foreach>
+    </delete>
+</mapper>

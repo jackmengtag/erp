@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.inventory.mapper.ErpInventoryTxnMapper">
+
+    <resultMap type="ErpInventoryTxn" id="ErpInventoryTxnResult">
+        <result property="txnId"    column="txn_id"    />
+        <result property="txnType"    column="txn_type"    />
+        <result property="materialId"    column="material_id"    />
+        <result property="warehouseId"    column="warehouse_id"    />
+        <result property="locationId"    column="location_id"    />
+        <result property="batchNo"    column="batch_no"    />
+        <result property="direction"    column="direction"    />
+        <result property="qty"    column="qty"    />
+        <result property="costPrice"    column="cost_price"    />
+        <result property="amount"    column="amount"    />
+        <result property="sourceType"    column="source_type"    />
+        <result property="sourceId"    column="source_id"    />
+        <result property="sourceCode"    column="source_code"    />
+        <result property="operBy"    column="oper_by"    />
+        <result property="txnTime"    column="txn_time"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectErpInventoryTxnVo">
+        select txn_id, txn_type, material_id, warehouse_id, location_id, batch_no, direction, qty, cost_price, amount, source_type, source_id, source_code, oper_by, txn_time, create_time from erp_inventory_txn
+    </sql>
+
+    <select id="selectErpInventoryTxnList" parameterType="ErpInventoryTxn" resultMap="ErpInventoryTxnResult">
+        <include refid="selectErpInventoryTxnVo"/>
+        <where>
+            <if test="txnType != null  and txnType != ''"> and txn_type = #{txnType}</if>
+            <if test="materialId != null "> and material_id = #{materialId}</if>
+            <if test="warehouseId != null "> and warehouse_id = #{warehouseId}</if>
+            <if test="locationId != null "> and location_id = #{locationId}</if>
+            <if test="batchNo != null  and batchNo != ''"> and batch_no = #{batchNo}</if>
+            <if test="direction != null  and direction != ''"> and direction = #{direction}</if>
+            <if test="qty != null "> and qty = #{qty}</if>
+            <if test="costPrice != null "> and cost_price = #{costPrice}</if>
+            <if test="amount != null "> and amount = #{amount}</if>
+            <if test="sourceType != null  and sourceType != ''"> and source_type = #{sourceType}</if>
+            <if test="sourceId != null "> and source_id = #{sourceId}</if>
+            <if test="sourceCode != null  and sourceCode != ''"> and source_code = #{sourceCode}</if>
+            <if test="operBy != null  and operBy != ''"> and oper_by = #{operBy}</if>
+            <if test="txnTime != null "> and txn_time = #{txnTime}</if>
+        </where>
+    </select>
+
+    <select id="selectErpInventoryTxnByTxnId" parameterType="Long" resultMap="ErpInventoryTxnResult">
+        <include refid="selectErpInventoryTxnVo"/>
+        where txn_id = #{txnId}
+    </select>
+
+    <insert id="insertErpInventoryTxn" parameterType="ErpInventoryTxn" useGeneratedKeys="true" keyProperty="txnId">
+        insert into erp_inventory_txn
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="txnType != null and txnType != ''">txn_type,</if>
+            <if test="materialId != null">material_id,</if>
+            <if test="warehouseId != null">warehouse_id,</if>
+            <if test="locationId != null">location_id,</if>
+            <if test="batchNo != null">batch_no,</if>
+            <if test="direction != null and direction != ''">direction,</if>
+            <if test="qty != null">qty,</if>
+            <if test="costPrice != null">cost_price,</if>
+            <if test="amount != null">amount,</if>
+            <if test="sourceType != null">source_type,</if>
+            <if test="sourceId != null">source_id,</if>
+            <if test="sourceCode != null">source_code,</if>
+            <if test="operBy != null">oper_by,</if>
+            <if test="txnTime != null">txn_time,</if>
+            <if test="createTime != null">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="txnType != null and txnType != ''">#{txnType},</if>
+            <if test="materialId != null">#{materialId},</if>
+            <if test="warehouseId != null">#{warehouseId},</if>
+            <if test="locationId != null">#{locationId},</if>
+            <if test="batchNo != null">#{batchNo},</if>
+            <if test="direction != null and direction != ''">#{direction},</if>
+            <if test="qty != null">#{qty},</if>
+            <if test="costPrice != null">#{costPrice},</if>
+            <if test="amount != null">#{amount},</if>
+            <if test="sourceType != null">#{sourceType},</if>
+            <if test="sourceId != null">#{sourceId},</if>
+            <if test="sourceCode != null">#{sourceCode},</if>
+            <if test="operBy != null">#{operBy},</if>
+            <if test="txnTime != null">#{txnTime},</if>
+            <if test="createTime != null">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateErpInventoryTxn" parameterType="ErpInventoryTxn">
+        update erp_inventory_txn
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="txnType != null and txnType != ''">txn_type = #{txnType},</if>
+            <if test="materialId != null">material_id = #{materialId},</if>
+            <if test="warehouseId != null">warehouse_id = #{warehouseId},</if>
+            <if test="locationId != null">location_id = #{locationId},</if>
+            <if test="batchNo != null">batch_no = #{batchNo},</if>
+            <if test="direction != null and direction != ''">direction = #{direction},</if>
+            <if test="qty != null">qty = #{qty},</if>
+            <if test="costPrice != null">cost_price = #{costPrice},</if>
+            <if test="amount != null">amount = #{amount},</if>
+            <if test="sourceType != null">source_type = #{sourceType},</if>
+            <if test="sourceId != null">source_id = #{sourceId},</if>
+            <if test="sourceCode != null">source_code = #{sourceCode},</if>
+            <if test="operBy != null">oper_by = #{operBy},</if>
+            <if test="txnTime != null">txn_time = #{txnTime},</if>
+        </trim>
+        where txn_id = #{txnId}
+    </update>
+
+    <delete id="deleteErpInventoryTxnByTxnId" parameterType="Long">
+        delete from erp_inventory_txn where txn_id = #{txnId}
+    </delete>
+
+    <delete id="deleteErpInventoryTxnByTxnIds" parameterType="String">
+        delete from erp_inventory_txn where txn_id in
+        <foreach item="txnId" collection="array" open="(" separator="," close=")">
+            #{txnId}
+        </foreach>
+    </delete>
+</mapper>

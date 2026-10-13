@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.platform.mapper.ErpWorkflowDefMapper">
+
+    <resultMap type="ErpWorkflowDef" id="ErpWorkflowDefResult">
+        <result property="wfId"    column="wf_id"    />
+        <result property="wfCode"    column="wf_code"    />
+        <result property="wfName"    column="wf_name"    />
+        <result property="bizObject"    column="biz_object"    />
+        <result property="amountLimit"    column="amount_limit"    />
+        <result property="assigneeType"    column="assignee_type"    />
+        <result property="assigneeValue"    column="assignee_value"    />
+        <result property="approveMode"    column="approve_mode"    />
+        <result property="timeoutHours"    column="timeout_hours"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectErpWorkflowDefVo">
+        select wf_id, wf_code, wf_name, biz_object, amount_limit, assignee_type, assignee_value, approve_mode, timeout_hours, status, create_by, create_time, update_by, update_time, remark from erp_workflow_def
+    </sql>
+
+    <select id="selectErpWorkflowDefList" parameterType="ErpWorkflowDef" resultMap="ErpWorkflowDefResult">
+        <include refid="selectErpWorkflowDefVo"/>
+        <where>
+            del_flag = '0'
+            <if test="wfCode != null  and wfCode != ''"> and wf_code like concat('%', #{wfCode}, '%')</if>
+            <if test="wfName != null  and wfName != ''"> and wf_name like concat('%', #{wfName}, '%')</if>
+            <if test="bizObject != null  and bizObject != ''"> and biz_object = #{bizObject}</if>
+            <if test="amountLimit != null "> and amount_limit = #{amountLimit}</if>
+            <if test="assigneeType != null  and assigneeType != ''"> and assignee_type = #{assigneeType}</if>
+            <if test="assigneeValue != null  and assigneeValue != ''"> and assignee_value = #{assigneeValue}</if>
+            <if test="approveMode != null  and approveMode != ''"> and approve_mode = #{approveMode}</if>
+            <if test="timeoutHours != null "> and timeout_hours = #{timeoutHours}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+    </select>
+
+    <select id="selectErpWorkflowDefByWfId" parameterType="Long" resultMap="ErpWorkflowDefResult">
+        <include refid="selectErpWorkflowDefVo"/>
+        where wf_id = #{wfId}
+    </select>
+
+    <insert id="insertErpWorkflowDef" parameterType="ErpWorkflowDef" useGeneratedKeys="true" keyProperty="wfId">
+        insert into erp_workflow_def
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="wfCode != null and wfCode != ''">wf_code,</if>
+            <if test="wfName != null and wfName != ''">wf_name,</if>
+            <if test="bizObject != null">biz_object,</if>
+            <if test="amountLimit != null">amount_limit,</if>
+            <if test="assigneeType != null">assignee_type,</if>
+            <if test="assigneeValue != null">assignee_value,</if>
+            <if test="approveMode != null">approve_mode,</if>
+            <if test="timeoutHours != null">timeout_hours,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="wfCode != null and wfCode != ''">#{wfCode},</if>
+            <if test="wfName != null and wfName != ''">#{wfName},</if>
+            <if test="bizObject != null">#{bizObject},</if>
+            <if test="amountLimit != null">#{amountLimit},</if>
+            <if test="assigneeType != null">#{assigneeType},</if>
+            <if test="assigneeValue != null">#{assigneeValue},</if>
+            <if test="approveMode != null">#{approveMode},</if>
+            <if test="timeoutHours != null">#{timeoutHours},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateErpWorkflowDef" parameterType="ErpWorkflowDef">
+        update erp_workflow_def
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="wfCode != null and wfCode != ''">wf_code = #{wfCode},</if>
+            <if test="wfName != null and wfName != ''">wf_name = #{wfName},</if>
+            <if test="bizObject != null">biz_object = #{bizObject},</if>
+            <if test="amountLimit != null">amount_limit = #{amountLimit},</if>
+            <if test="assigneeType != null">assignee_type = #{assigneeType},</if>
+            <if test="assigneeValue != null">assignee_value = #{assigneeValue},</if>
+            <if test="approveMode != null">approve_mode = #{approveMode},</if>
+            <if test="timeoutHours != null">timeout_hours = #{timeoutHours},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where wf_id = #{wfId}
+    </update>
+
+    <delete id="deleteErpWorkflowDefByWfId" parameterType="Long">
+        update erp_workflow_def set del_flag = '2' where wf_id = #{wfId}
+    </delete>
+
+    <delete id="deleteErpWorkflowDefByWfIds" parameterType="String">
+        update erp_workflow_def set del_flag = '2' where wf_id in
+        <foreach item="wfId" collection="array" open="(" separator="," close=")">
+            #{wfId}
+        </foreach>
+    </delete>
+</mapper>

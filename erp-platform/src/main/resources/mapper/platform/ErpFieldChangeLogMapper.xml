@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.platform.mapper.ErpFieldChangeLogMapper">
+
+    <resultMap type="ErpFieldChangeLog" id="ErpFieldChangeLogResult">
+        <result property="logId"    column="log_id"    />
+        <result property="bizType"    column="biz_type"    />
+        <result property="bizId"    column="biz_id"    />
+        <result property="fieldName"    column="field_name"    />
+        <result property="fieldLabel"    column="field_label"    />
+        <result property="oldValue"    column="old_value"    />
+        <result property="newValue"    column="new_value"    />
+        <result property="operType"    column="oper_type"    />
+        <result property="operName"    column="oper_name"    />
+        <result property="operIp"    column="oper_ip"    />
+        <result property="operTime"    column="oper_time"    />
+        <result property="reason"    column="reason"    />
+    </resultMap>
+
+    <sql id="selectErpFieldChangeLogVo">
+        select log_id, biz_type, biz_id, field_name, field_label, old_value, new_value, oper_type, oper_name, oper_ip, oper_time, reason from erp_field_change_log
+    </sql>
+
+    <select id="selectErpFieldChangeLogList" parameterType="ErpFieldChangeLog" resultMap="ErpFieldChangeLogResult">
+        <include refid="selectErpFieldChangeLogVo"/>
+        <where>
+            <if test="bizType != null  and bizType != ''"> and biz_type = #{bizType}</if>
+            <if test="bizId != null  and bizId != ''"> and biz_id = #{bizId}</if>
+            <if test="fieldName != null  and fieldName != ''"> and field_name = #{fieldName}</if>
+            <if test="fieldLabel != null  and fieldLabel != ''"> and field_label like concat('%', #{fieldLabel}, '%')</if>
+            <if test="oldValue != null  and oldValue != ''"> and old_value = #{oldValue}</if>
+            <if test="newValue != null  and newValue != ''"> and new_value = #{newValue}</if>
+            <if test="operType != null  and operType != ''"> and oper_type = #{operType}</if>
+            <if test="operName != null  and operName != ''"> and oper_name = #{operName}</if>
+            <if test="operIp != null  and operIp != ''"> and oper_ip = #{operIp}</if>
+            <if test="operTime != null "> and oper_time = #{operTime}</if>
+            <if test="reason != null  and reason != ''"> and reason = #{reason}</if>
+        </where>
+    </select>
+
+    <select id="selectErpFieldChangeLogByLogId" parameterType="Long" resultMap="ErpFieldChangeLogResult">
+        <include refid="selectErpFieldChangeLogVo"/>
+        where log_id = #{logId}
+    </select>
+
+    <insert id="insertErpFieldChangeLog" parameterType="ErpFieldChangeLog" useGeneratedKeys="true" keyProperty="logId">
+        insert into erp_field_change_log
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="bizType != null">biz_type,</if>
+            <if test="bizId != null">biz_id,</if>
+            <if test="fieldName != null">field_name,</if>
+            <if test="fieldLabel != null">field_label,</if>
+            <if test="oldValue != null">old_value,</if>
+            <if test="newValue != null">new_value,</if>
+            <if test="operType != null">oper_type,</if>
+            <if test="operName != null">oper_name,</if>
+            <if test="operIp != null">oper_ip,</if>
+            <if test="operTime != null">oper_time,</if>
+            <if test="reason != null">reason,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="bizType != null">#{bizType},</if>
+            <if test="bizId != null">#{bizId},</if>
+            <if test="fieldName != null">#{fieldName},</if>
+            <if test="fieldLabel != null">#{fieldLabel},</if>
+            <if test="oldValue != null">#{oldValue},</if>
+            <if test="newValue != null">#{newValue},</if>
+            <if test="operType != null">#{operType},</if>
+            <if test="operName != null">#{operName},</if>
+            <if test="operIp != null">#{operIp},</if>
+            <if test="operTime != null">#{operTime},</if>
+            <if test="reason != null">#{reason},</if>
+         </trim>
+    </insert>
+
+    <update id="updateErpFieldChangeLog" parameterType="ErpFieldChangeLog">
+        update erp_field_change_log
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="bizType != null">biz_type = #{bizType},</if>
+            <if test="bizId != null">biz_id = #{bizId},</if>
+            <if test="fieldName != null">field_name = #{fieldName},</if>
+            <if test="fieldLabel != null">field_label = #{fieldLabel},</if>
+            <if test="oldValue != null">old_value = #{oldValue},</if>
+            <if test="newValue != null">new_value = #{newValue},</if>
+            <if test="operType != null">oper_type = #{operType},</if>
+            <if test="operName != null">oper_name = #{operName},</if>
+            <if test="operIp != null">oper_ip = #{operIp},</if>
+            <if test="operTime != null">oper_time = #{operTime},</if>
+            <if test="reason != null">reason = #{reason},</if>
+        </trim>
+        where log_id = #{logId}
+    </update>
+
+    <delete id="deleteErpFieldChangeLogByLogId" parameterType="Long">
+        delete from erp_field_change_log where log_id = #{logId}
+    </delete>
+
+    <delete id="deleteErpFieldChangeLogByLogIds" parameterType="String">
+        delete from erp_field_change_log where log_id in
+        <foreach item="logId" collection="array" open="(" separator="," close=")">
+            #{logId}
+        </foreach>
+    </delete>
+</mapper>

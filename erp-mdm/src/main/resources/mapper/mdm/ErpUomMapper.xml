@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.mdm.mapper.ErpUomMapper">
+
+    <resultMap type="ErpUom" id="ErpUomResult">
+        <result property="uomId"    column="uom_id"    />
+        <result property="uomCode"    column="uom_code"    />
+        <result property="uomName"    column="uom_name"    />
+        <result property="uomType"    column="uom_type"    />
+        <result property="precisionScale"    column="precision_scale"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectErpUomVo">
+        select uom_id, uom_code, uom_name, uom_type, precision_scale, status, create_by, create_time, update_by, update_time, remark from erp_uom
+    </sql>
+
+    <select id="selectErpUomList" parameterType="ErpUom" resultMap="ErpUomResult">
+        <include refid="selectErpUomVo"/>
+        <where>
+            del_flag = '0'
+            <if test="uomCode != null  and uomCode != ''"> and uom_code like concat('%', #{uomCode}, '%')</if>
+            <if test="uomName != null  and uomName != ''"> and uom_name like concat('%', #{uomName}, '%')</if>
+            <if test="uomType != null  and uomType != ''"> and uom_type = #{uomType}</if>
+            <if test="precisionScale != null "> and precision_scale = #{precisionScale}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+    </select>
+
+    <select id="selectErpUomByUomId" parameterType="Long" resultMap="ErpUomResult">
+        <include refid="selectErpUomVo"/>
+        where uom_id = #{uomId}
+    </select>
+
+    <insert id="insertErpUom" parameterType="ErpUom" useGeneratedKeys="true" keyProperty="uomId">
+        insert into erp_uom
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="uomCode != null and uomCode != ''">uom_code,</if>
+            <if test="uomName != null and uomName != ''">uom_name,</if>
+            <if test="uomType != null">uom_type,</if>
+            <if test="precisionScale != null">precision_scale,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="uomCode != null and uomCode != ''">#{uomCode},</if>
+            <if test="uomName != null and uomName != ''">#{uomName},</if>
+            <if test="uomType != null">#{uomType},</if>
+            <if test="precisionScale != null">#{precisionScale},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateErpUom" parameterType="ErpUom">
+        update erp_uom
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="uomCode != null and uomCode != ''">uom_code = #{uomCode},</if>
+            <if test="uomName != null and uomName != ''">uom_name = #{uomName},</if>
+            <if test="uomType != null">uom_type = #{uomType},</if>
+            <if test="precisionScale != null">precision_scale = #{precisionScale},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where uom_id = #{uomId}
+    </update>
+
+    <delete id="deleteErpUomByUomId" parameterType="Long">
+        update erp_uom set del_flag = '2' where uom_id = #{uomId}
+    </delete>
+
+    <delete id="deleteErpUomByUomIds" parameterType="String">
+        update erp_uom set del_flag = '2' where uom_id in
+        <foreach item="uomId" collection="array" open="(" separator="," close=")">
+            #{uomId}
+        </foreach>
+    </delete>
+</mapper>

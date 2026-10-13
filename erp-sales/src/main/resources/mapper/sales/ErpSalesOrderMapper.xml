@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.sales.mapper.ErpSalesOrderMapper">
+
+    <resultMap type="ErpSalesOrder" id="ErpSalesOrderResult">
+        <result property="orderId"    column="order_id"    />
+        <result property="orderCode"    column="order_code"    />
+        <result property="customerId"    column="customer_id"    />
+        <result property="orderDate"    column="order_date"    />
+        <result property="deliveryDate"    column="delivery_date"    />
+        <result property="currency"    column="currency"    />
+        <result property="amountTax"    column="amount_tax"    />
+        <result property="amountNotax"    column="amount_notax"    />
+        <result property="creditStatus"    column="credit_status"    />
+        <result property="orderType"    column="order_type"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <resultMap id="ErpSalesOrderErpSalesOrderLineResult" type="ErpSalesOrder" extends="ErpSalesOrderResult">
+        <collection property="erpSalesOrderLineList" notNullColumn="sub_line_id" javaType="java.util.List" resultMap="ErpSalesOrderLineResult" />
+    </resultMap>
+
+    <resultMap type="ErpSalesOrderLine" id="ErpSalesOrderLineResult">
+        <result property="lineId"    column="sub_line_id"    />
+        <result property="orderId"    column="sub_order_id"    />
+        <result property="lineNo"    column="sub_line_no"    />
+        <result property="materialId"    column="sub_material_id"    />
+        <result property="qty"    column="sub_qty"    />
+        <result property="deliveredQty"    column="sub_delivered_qty"    />
+        <result property="price"    column="sub_price"    />
+        <result property="taxRate"    column="sub_tax_rate"    />
+        <result property="amount"    column="sub_amount"    />
+        <result property="deliveryDate"    column="sub_delivery_date"    />
+        <result property="createTime"    column="sub_create_time"    />
+    </resultMap>
+
+    <sql id="selectErpSalesOrderVo">
+        select order_id, order_code, customer_id, order_date, delivery_date, currency, amount_tax, amount_notax, credit_status, order_type, status, create_by, create_time, update_by, update_time, remark from erp_sales_order
+    </sql>
+
+    <select id="selectErpSalesOrderList" parameterType="ErpSalesOrder" resultMap="ErpSalesOrderResult">
+        <include refid="selectErpSalesOrderVo"/>
+        <where>
+            del_flag = '0'
+            <if test="orderCode != null  and orderCode != ''"> and order_code like concat('%', #{orderCode}, '%')</if>
+            <if test="customerId != null "> and customer_id = #{customerId}</if>
+            <if test="orderDate != null "> and order_date = #{orderDate}</if>
+            <if test="deliveryDate != null "> and delivery_date = #{deliveryDate}</if>
+            <if test="currency != null  and currency != ''"> and currency = #{currency}</if>
+            <if test="creditStatus != null  and creditStatus != ''"> and credit_status = #{creditStatus}</if>
+            <if test="orderType != null  and orderType != ''"> and order_type = #{orderType}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+    </select>
+
+    <select id="selectErpSalesOrderByOrderId" parameterType="Long" resultMap="ErpSalesOrderErpSalesOrderLineResult">
+        select a.order_id, a.order_code, a.customer_id, a.order_date, a.delivery_date, a.currency, a.amount_tax, a.amount_notax, a.credit_status, a.order_type, a.status, a.create_by, a.create_time, a.update_by, a.update_time, a.remark,
+               b.line_id as sub_line_id, b.order_id as sub_order_id, b.line_no as sub_line_no, b.material_id as sub_material_id, b.qty as sub_qty, b.delivered_qty as sub_delivered_qty, b.price as sub_price, b.tax_rate as sub_tax_rate, b.amount as sub_amount, b.delivery_date as sub_delivery_date, b.create_time as sub_create_time
+        from erp_sales_order a
+        left join erp_sales_order_line b on b.order_id = a.order_id
+        where a.order_id = #{orderId}
+    </select>
+
+    <insert id="insertErpSalesOrder" parameterType="ErpSalesOrder" useGeneratedKeys="true" keyProperty="orderId">
+        insert into erp_sales_order
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orderCode != null and orderCode != ''">order_code,</if>
+            <if test="customerId != null">customer_id,</if>
+            <if test="orderDate != null">order_date,</if>
+            <if test="deliveryDate != null">delivery_date,</if>
+            <if test="currency != null">currency,</if>
+            <if test="amountTax != null">amount_tax,</if>
+            <if test="amountNotax != null">amount_notax,</if>
+            <if test="creditStatus != null">credit_status,</if>
+            <if test="orderType != null">order_type,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="orderCode != null and orderCode != ''">#{orderCode},</if>
+            <if test="customerId != null">#{customerId},</if>
+            <if test="orderDate != null">#{orderDate},</if>
+            <if test="deliveryDate != null">#{deliveryDate},</if>
+            <if test="currency != null">#{currency},</if>
+            <if test="amountTax != null">#{amountTax},</if>
+            <if test="amountNotax != null">#{amountNotax},</if>
+            <if test="creditStatus != null">#{creditStatus},</if>
+            <if test="orderType != null">#{orderType},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateErpSalesOrder" parameterType="ErpSalesOrder">
+        update erp_sales_order
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="orderCode != null and orderCode != ''">order_code = #{orderCode},</if>
+            <if test="customerId != null">customer_id = #{customerId},</if>
+            <if test="orderDate != null">order_date = #{orderDate},</if>
+            <if test="deliveryDate != null">delivery_date = #{deliveryDate},</if>
+            <if test="currency != null">currency = #{currency},</if>
+            <if test="amountTax != null">amount_tax = #{amountTax},</if>
+            <if test="amountNotax != null">amount_notax = #{amountNotax},</if>
+            <if test="creditStatus != null">credit_status = #{creditStatus},</if>
+            <if test="orderType != null">order_type = #{orderType},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where order_id = #{orderId}
+    </update>
+
+    <delete id="deleteErpSalesOrderByOrderId" parameterType="Long">
+        update erp_sales_order set del_flag = '2' where order_id = #{orderId}
+    </delete>
+
+    <delete id="deleteErpSalesOrderByOrderIds" parameterType="String">
+        update erp_sales_order set del_flag = '2' where order_id in
+        <foreach item="orderId" collection="array" open="(" separator="," close=")">
+            #{orderId}
+        </foreach>
+    </delete>
+
+    <delete id="deleteErpSalesOrderLineByOrderId" parameterType="Long">
+        delete from erp_sales_order_line where order_id = #{orderId}
+    </delete>
+
+    <delete id="deleteErpSalesOrderLineByOrderIds" parameterType="String">
+        delete from erp_sales_order_line where order_id in
+        <foreach item="orderId" collection="array" open="(" separator="," close=")">
+            #{orderId}
+        </foreach>
+    </delete>
+
+    <insert id="batchErpSalesOrderLine">
+        insert into erp_sales_order_line( line_id, order_id, line_no, material_id, qty, delivered_qty, price, tax_rate, amount, delivery_date, create_time) values
+        <foreach item="item" index="index" collection="list" separator=",">
+            ( #{item.lineId}, #{item.orderId}, #{item.lineNo}, #{item.materialId}, #{item.qty}, #{item.deliveredQty}, #{item.price}, #{item.taxRate}, #{item.amount}, #{item.deliveryDate}, #{item.createTime})
+        </foreach>
+    </insert>
+</mapper>

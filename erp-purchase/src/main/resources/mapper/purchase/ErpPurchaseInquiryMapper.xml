@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.purchase.mapper.ErpPurchaseInquiryMapper">
+
+    <resultMap type="ErpPurchaseInquiry" id="ErpPurchaseInquiryResult">
+        <result property="inquiryId"    column="inquiry_id"    />
+        <result property="inquiryCode"    column="inquiry_code"    />
+        <result property="inquiryDate"    column="inquiry_date"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <resultMap id="ErpPurchaseInquiryErpPurchaseInquiryLineResult" type="ErpPurchaseInquiry" extends="ErpPurchaseInquiryResult">
+        <collection property="erpPurchaseInquiryLineList" notNullColumn="sub_line_id" javaType="java.util.List" resultMap="ErpPurchaseInquiryLineResult" />
+    </resultMap>
+
+    <resultMap type="ErpPurchaseInquiryLine" id="ErpPurchaseInquiryLineResult">
+        <result property="lineId"    column="sub_line_id"    />
+        <result property="inquiryId"    column="sub_inquiry_id"    />
+        <result property="lineNo"    column="sub_line_no"    />
+        <result property="materialId"    column="sub_material_id"    />
+        <result property="qty"    column="sub_qty"    />
+        <result property="supplierId"    column="sub_supplier_id"    />
+        <result property="quotePrice"    column="sub_quote_price"    />
+        <result property="taxRate"    column="sub_tax_rate"    />
+        <result property="deliveryDays"    column="sub_delivery_days"    />
+        <result property="selectedFlag"    column="sub_selected_flag"    />
+        <result property="createTime"    column="sub_create_time"    />
+    </resultMap>
+
+    <sql id="selectErpPurchaseInquiryVo">
+        select inquiry_id, inquiry_code, inquiry_date, status, create_by, create_time, update_by, update_time, remark from erp_purchase_inquiry
+    </sql>
+
+    <select id="selectErpPurchaseInquiryList" parameterType="ErpPurchaseInquiry" resultMap="ErpPurchaseInquiryResult">
+        <include refid="selectErpPurchaseInquiryVo"/>
+        <where>
+            del_flag = '0'
+            <if test="inquiryCode != null  and inquiryCode != ''"> and inquiry_code like concat('%', #{inquiryCode}, '%')</if>
+            <if test="inquiryDate != null "> and inquiry_date = #{inquiryDate}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+    </select>
+
+    <select id="selectErpPurchaseInquiryByInquiryId" parameterType="Long" resultMap="ErpPurchaseInquiryErpPurchaseInquiryLineResult">
+        select a.inquiry_id, a.inquiry_code, a.inquiry_date, a.status, a.create_by, a.create_time, a.update_by, a.update_time, a.remark,
+               b.line_id as sub_line_id, b.inquiry_id as sub_inquiry_id, b.line_no as sub_line_no, b.material_id as sub_material_id, b.qty as sub_qty, b.supplier_id as sub_supplier_id, b.quote_price as sub_quote_price, b.tax_rate as sub_tax_rate, b.delivery_days as sub_delivery_days, b.selected_flag as sub_selected_flag, b.create_time as sub_create_time
+        from erp_purchase_inquiry a
+        left join erp_purchase_inquiry_line b on b.inquiry_id = a.inquiry_id
+        where a.inquiry_id = #{inquiryId}
+    </select>
+
+    <insert id="insertErpPurchaseInquiry" parameterType="ErpPurchaseInquiry" useGeneratedKeys="true" keyProperty="inquiryId">
+        insert into erp_purchase_inquiry
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="inquiryCode != null and inquiryCode != ''">inquiry_code,</if>
+            <if test="inquiryDate != null">inquiry_date,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="inquiryCode != null and inquiryCode != ''">#{inquiryCode},</if>
+            <if test="inquiryDate != null">#{inquiryDate},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateErpPurchaseInquiry" parameterType="ErpPurchaseInquiry">
+        update erp_purchase_inquiry
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="inquiryCode != null and inquiryCode != ''">inquiry_code = #{inquiryCode},</if>
+            <if test="inquiryDate != null">inquiry_date = #{inquiryDate},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where inquiry_id = #{inquiryId}
+    </update>
+
+    <delete id="deleteErpPurchaseInquiryByInquiryId" parameterType="Long">
+        update erp_purchase_inquiry set del_flag = '2' where inquiry_id = #{inquiryId}
+    </delete>
+
+    <delete id="deleteErpPurchaseInquiryByInquiryIds" parameterType="String">
+        update erp_purchase_inquiry set del_flag = '2' where inquiry_id in
+        <foreach item="inquiryId" collection="array" open="(" separator="," close=")">
+            #{inquiryId}
+        </foreach>
+    </delete>
+
+    <delete id="deleteErpPurchaseInquiryLineByInquiryId" parameterType="Long">
+        delete from erp_purchase_inquiry_line where inquiry_id = #{inquiryId}
+    </delete>
+
+    <delete id="deleteErpPurchaseInquiryLineByInquiryIds" parameterType="String">
+        delete from erp_purchase_inquiry_line where inquiry_id in
+        <foreach item="inquiryId" collection="array" open="(" separator="," close=")">
+            #{inquiryId}
+        </foreach>
+    </delete>
+
+    <insert id="batchErpPurchaseInquiryLine">
+        insert into erp_purchase_inquiry_line( line_id, inquiry_id, line_no, material_id, qty, supplier_id, quote_price, tax_rate, delivery_days, selected_flag, create_time) values
+        <foreach item="item" index="index" collection="list" separator=",">
+            ( #{item.lineId}, #{item.inquiryId}, #{item.lineNo}, #{item.materialId}, #{item.qty}, #{item.supplierId}, #{item.quotePrice}, #{item.taxRate}, #{item.deliveryDays}, #{item.selectedFlag}, #{item.createTime})
+        </foreach>
+    </insert>
+</mapper>
